@@ -3,7 +3,7 @@ Convenient publishing of scientific data with proper versioning, rich metadata s
 
 ## Table of Contents
 - [Overview](#Overview)
-- [Getting Started](#GettingStarted)
+- [Getting Started](#Getting-Started)
 
 ## Overview
 The core concept of Edelweiss Data is that of a **Dataset**. A Dataset is a single table of data (usually originating from a csv file) and carries the following additional pieces of information:
@@ -26,5 +26,5 @@ Edelweiss Data servers provide a rich **User Interface** as well that let's you 
 
 ## Getting Started
 
-1. Authentication
-2. Creating and Publishing a Dataset
+- [Authentication](walkthroughs/authentication.md)
+- [Creating and Publishing a Dataset](walkthroughs/create-publish.md)
