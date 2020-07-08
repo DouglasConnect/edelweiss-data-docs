@@ -1,6 +1,8 @@
 # Edelweiss Data
 Convenient publishing of scientific data with proper versioning, rich metadata support and a powerful API
 
+![Edelweiss Data](https://edelweissdata.com/images/data-explorer.png)
+
 ## Table of Contents
 - [Overview](#Overview)
 - [Getting Started](#Getting-Started)
