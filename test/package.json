@@ -1,0 +1,13 @@
+{
+  "name": "edelweiss-docs-test",
+  "version": "1.0.0",
+  "description": "Test Project for Documentation Scripts",
+  "scripts": {
+    "start": "light-server -s src -o -w **"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "light-server": "^2.7.0"
+  }
+}
