@@ -6,22 +6,23 @@ This Project is designed to act as a sanity check for the snippets in the Docume
 
 For now, you will need to first generate an access token using the python client and then replace it in the [tests.js](./src/tests.js#L3) file
 
-To generate the token you will need to use the following snippet
+To generate the token, simply navigate to the python folder and run the following
 
-```python
-from edelweiss_data import API
+```bash
+# we create the python environment
+virtualenv env
 
-# Set this to the url of the Edelweiss Data server you want to interact with
-edelweiss_api_url = 'https://api.edelweissdata.com'
+# activate the python environment
+./env/Scripts/activate
 
-api = API(edelweiss_api_url)
+# install the requirements
+pip install -r requirements.txt
 
-api.authenticate()
-
-token = api.auth.generate_jwt()
-
-print(token)
+# Execute the script to generate the token
+python authenticate.py
 ```
+
+This will generate a `token.jwt` file with your access token
 
 ## Execute Tests
 To run simply navigate to the test directory and then from there execute the following commands

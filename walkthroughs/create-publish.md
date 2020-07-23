@@ -30,6 +30,7 @@ You start by creating a dataset. By default when a dataset is created it is in t
 
 Code:
 ```js
+let token = "XXXXXXXXXXXXXXXX" //Replace with your API Token
 const data = { name: 'my-dataset' };
 let baseUrl = "https://api.edelweissdata.com/datasets"
 
@@ -37,7 +38,7 @@ let fetchOptions = {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'bearer XXXXXXXXXXXXXXXX'  //Replace then XXX with your API token
+        'Authorization': `bearer ${token}`
     },
     body: JSON.stringify(data),
 }
@@ -84,7 +85,7 @@ formData.append("data", file, "")
 let fetchOptions = {
     method: 'POST',
     headers: {
-        'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+        'Authorization': `bearer ${token}`
     },
     body: formData,
 }
@@ -132,7 +133,7 @@ let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
 let fetchOptions = {
     method: 'POST',
     headers: {
-        'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+        'Authorization': `bearer ${token}`
     }
 }
 
@@ -146,7 +147,7 @@ fetch(`${baseUrl}/${datasetid}/in-progress/schema/infer`, fetchOptions)
     });
 ```
 Response:
-```js
+```json
 {
    "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
    "name":"my-dataset",
@@ -193,7 +194,7 @@ let fetchOptions = {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'bearer XXXXXXXXXXXXXXXX'  //Replace then XXX with your API token
+        'Authorization': `bearer ${token}`
     },
     body: JSON.stringify(data),
 }
@@ -242,7 +243,7 @@ When we want to query the Dataset, we use need to supply the datasetId and versi
 
 It also leverages a powerful query languge that allows you to slice and filter the data the endpoint returns.
 
-For example the query in the snippet, filters the data where the column `state` contains the word `baden`
+For example the query in the snippet, filters the data where the column `State` contains the word `baden`
 
 ```js
 let query = {
@@ -285,7 +286,7 @@ let fetchOptions = {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'bearer XXXXXXXXXXXXXXXX'  //Replace then XXX with your API token
+        'Authorization': `bearer ${token}`
     },
     body: JSON.stringify(data),
 }
@@ -329,7 +330,7 @@ let fetchOptions = {
     method: 'DELETE',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'bearer XXXXXXXXXXXXXXXX'  //Replace then XXX with your API token
+        'Authorization': `bearer ${token}`
     }
 }
 
