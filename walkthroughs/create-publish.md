@@ -26,9 +26,9 @@ The steps to publish a new Dataset are as follows
 
 ### Create a Dataset
 
-You start by creating a dataset. By default when a dataset is created it is in the InProgress State. In this state you can make modifications and updates
+We start by creating a dataset. By default when a dataset is created it is in the InProgress State. In this state you can make modifications and updates but at the moment, the Dataset is empty
 
-Code:
+**Code**:
 ```js
 let token = "XXXXXXXXXXXXXXXX" //Replace with your API Token
 const data = { name: 'my-dataset' };
@@ -51,7 +51,7 @@ fetch(`${baseUrl}/datasets/create`, fetchOptions)
     });
 ```
 
-Response:
+**Response:**
 
 ```json
 {
@@ -71,7 +71,7 @@ Response:
 
 Now that we have a dataset created, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data`. The api expects the file to be passed as the `data` parameter
 
-Code:
+**Code:**
 
 ```js
 let baseUrl = "https://api.edelweissdata.com/datasets"
@@ -80,7 +80,7 @@ let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
 let baseUrl = "https://api.edelweissdata.com/datasets";
 
 let formData = new FormData();
-formData.append("data", file, "")
+formData.append("data", file)
 
 let fetchOptions = {
     method: 'POST',
@@ -99,7 +99,7 @@ fetch(`${baseUrl}/${datasetid}/in-progress/data/upload`, fetchOptions)
         console.error('Error:', error);
     });
 ```
-Response:
+**Response:**
 ```json
 {
    "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
@@ -116,15 +116,17 @@ Response:
 
 ### Infer Schema
 
-At this point we have our data stored as CSV in Edelweiss Data however, It is currently stored as a bunch of string values in the Edelweiss Data.
+At this point we have our data stored as CSV in Edelweiss Data. However, It is currently stored as a bunch of string values in the Edelweiss Data.
 
 In order to make the data interesting and allow Edelwiess Data make sense of it, we need to supply a schema.
 
-The schema defines the datatype of the columns in the data. The data types could be simple Data Types like `string`, `integer` or they could be more advanced datatypes like `DateTime` or `Smiles`
+The schema defines the datatype of the columns in the data. The data types could be simple Data Types like `string`, `integer` or they could be more advanced datatypes like `DateTime` or [Smiles](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
 
 You can manually define a schema and upload it but Edelweiss Data has a convinent feature where it can infer the schema based on some heuristics.
 
-Code:
+To do this, we simply call the `Infer Schema` endpoint as follows
+
+**Code:**
 
 ```js
 let baseUrl = "https://api.edelweissdata.com/datasets"
@@ -146,7 +148,7 @@ fetch(`${baseUrl}/${datasetid}/in-progress/schema/infer`, fetchOptions)
         console.error('Error:', error);
     });
 ```
-Response:
+**Response:**
 ```json
 {
    "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
@@ -176,15 +178,15 @@ Response:
 }
 ```
 
+
 ### Publish the Dataset
 
-Now that we have inferred a schema for the database, We could publish our Dataset. Publishing a Dataset creates a new version of that Dataset.
+Now that we have inferred a schema for the database, We could publish our Dataset. This also allows Edelweiss Data to Validate the schema and also pre-compute some information about our data.
 
-Each version after being published cannot be changed rather you can create new versions to replace earlier versions.
-
+Publishing a Dataset creates a new version of that Dataset. Each version after being published cannot be changed rather you can create new versions to replace earlier versions.
 As a result, we need to provide a helpful changelog message that will helps us understand what this version is about
 
-Code:
+**Code:**
 ```js
 const data = { changelog: 'Initial Version' };
 let baseUrl = "https://api.edelweissdata.com/datasets"
@@ -206,7 +208,7 @@ fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
         console.error('Error:', error);
     });
 ```
-Response:
+**Response:**
 ```json
 {
    "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
@@ -274,7 +276,7 @@ let query = {
 See [Query Language](query.md) for more details about the query language.
 
 
-Code:
+**Code:**
 ```js
 let baseUrl = "https://api.edelweissdata.com/datasets"
 let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
@@ -299,7 +301,7 @@ fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${query}`, fetchOp
     });
 ```
 
-Response:
+**Response:**
 ```json
 {
     "total": 0,
