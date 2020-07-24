@@ -12,6 +12,8 @@ Keep in mind that the old version is still available
 
 ![Dataset LifeCycle](images/dataset-lifecycle.png)
 
+For detailed information about Edelweiss API you can visit the [Swagger Docs](https://api.edelweissdata.com/docs/index.html)
+
 ## Getting Started
 To Create a Dataset you will need to first [Create a Authentication Token](authentication.md)
 
@@ -19,10 +21,11 @@ The steps to publish a new Dataset are as follows
 
 1. Create a Dataset
 2. Upload the Data
-3. Infer the Schema
-4. Publish the Dataset
-5. Query the Dataset
-6. Delete a Dataset
+3. Upload the Schema
+4. Upload Metadata and Description
+5. Publish the Dataset
+6. Query the Dataset
+7. Delete a Dataset
 
 ### Create a Dataset
 
@@ -114,7 +117,7 @@ fetch(`${baseUrl}/${datasetid}/in-progress/data/upload`, fetchOptions)
 }
 ```
 
-### Infer Schema
+### Upload the Schema
 
 At this point we have our data stored as CSV in Edelweiss Data. However, It is currently stored as a bunch of string values in the Edelweiss Data.
 
@@ -122,7 +125,30 @@ In order to make the data interesting and allow Edelwiess Data make sense of it,
 
 The schema defines the datatype of the columns in the data. The data types could be simple Data Types like `string`, `integer` or they could be more advanced datatypes like `DateTime` or [Smiles](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
 
-You can manually define a schema and upload it but Edelweiss Data has a convinent feature where it can infer the schema based on some heuristics.
+Here are the list of Datatypes currently supported
+
+| Data Type        | Representation                      |
+| --               | --                                  |
+| String           | xsd:string                          |
+| Url              | xsd:anyURI                          |
+| Boolean          | xsd:boolean                         |
+| Integer          | xsd:integer                         |
+| Float            | xsd:double                          |
+| DateTime         | xsd:dateTime                        |
+| Date             | xsd:date                            |
+| DatasetId        | edelweiss:datasetid                 |
+| SMILES           | cheminf:CHEMINF_000018              |
+| Image            | https://schema.org/image            |
+| Json             | http://edamontology.org/format_3464 |
+
+There are currently two ways to define the Schema
+
+1. Inference - We can tell Edelweiss to Infer the schema
+2. Upload Schema - We supply the correct schema as json
+
+#### Schema Inference
+
+Edelweiss Data can infer the schema based on some heuristics.
 
 To do this, we simply call the `Infer Schema` endpoint as follows
 
@@ -178,6 +204,171 @@ fetch(`${baseUrl}/${datasetid}/in-progress/schema/infer`, fetchOptions)
 }
 ```
 
+#### Schema Upload
+
+The schema inference works very well for basic Datatypes however, there are situations where you want fine grained control over the schema. To accomplish this we simply need to call the `UpdateDataset` endpoint
+
+**Code:**
+```js
+let baseUrl = "https://api.edelweissdata.com/datasets"
+let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
+
+let data = {
+    schema: [
+        {
+            "name": "FirstName",
+            "dataType": "xsd:string"
+            "description": "First Name"
+        },
+        {
+            "name": "LastName",
+            "dataType": "xsd:string"
+            "description": "Last Name"
+        }
+    ]
+}
+
+let fetchOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+    },
+    body: JSON.stringify(data),
+}
+
+fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
+    .then(response => response.json())
+    .then(data => console.log('Success:', data))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+```
+
+**Response:**
+```json
+{
+   "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
+   "name":"my-dataset",
+   "schema":{
+      "columns":[
+         {
+            "name":"FirstName",
+            "description":"First Name",
+            "dataType":"xsd:string",
+            "visible":true
+         },
+         {
+            "name":"LastName",
+            "description":"Last Name",
+            "dataType":"xsd:string",
+            "visible": true
+         }
+      ]
+   },
+   "created":"2020-07-20T01:48:58.9086970+00:00",
+   "description":"",
+   "metadata":{
+
+   },
+   "dataSource":null
+}
+```
+
+### Upload Metadata and Description
+
+We have successfully infered the schema, at this point we can actually move on to publish the dataset however, we need to add a few more information to make our dataset useful. They are:
+
+1. Description - Markdown Textual Description to help users understand what the data is about
+2. Metadata - A Json object that contains pieces of structured data that is useful to allow other people find the dataset
+
+**Code:**
+```js
+let baseUrl = "https://api.edelweissdata.com/datasets"
+let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
+
+let description = `
+    # My Dataset
+    **by Jane Doe**
+
+    Description of the Dataset in Markdown
+`
+
+let metadata = {
+    name: "my-dataset",
+    author: "Jane Doe"
+    location: "Basel, Switzerland",
+}
+
+let datasetInfo = {
+  "name": "string",
+  "description": "string",
+  "metadata": metadata
+}
+
+let data = {
+    schema: [
+        {
+            "name": "FirstName",
+            "dataType": "xsd:string"
+            "description": "First Name"
+        },
+        {
+            "name": "LastName",
+            "dataType": "xsd:string"
+            "description": "Last Name"
+        }
+    ]
+}
+
+let fetchOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+    },
+    body: JSON.stringify(data),
+}
+
+fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
+    .then(response => response.json())
+    .then(data => console.log('Success:', data))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+```
+
+**Response:**
+```json
+{
+   "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
+   "name":"my-dataset",
+   "schema":{
+      "columns":[
+         {
+            "name":"FirstName",
+            "description":"First Name",
+            "dataType":"xsd:string",
+            "visible":true
+         },
+         {
+            "name":"LastName",
+            "description":"Last Name",
+            "dataType":"xsd:string",
+            "visible": true
+         }
+      ]
+   },
+   "created":"2020-07-20T01:48:58.9086970+00:00",
+   "description":"# My Dataset...",
+   "metadata":{
+        "name": "my-dataset",
+        "author": "Jane Doe",
+        "location": "Basel, Switzerland",
+    },
+   "dataSource":null
+}
+```
 
 ### Publish the Dataset
 
@@ -230,10 +421,12 @@ fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
       ]
    },
    "created":"2020-07-20T01:48:58.9086970+00:00",
-   "description":"",
+   "description":"# My Dataset...",
    "metadata":{
-
-   },
+        "name": "my-dataset",
+        "author": "Jane Doe",
+        "location": "Basel, Switzerland",
+    },
    "dataSource":null
 }
 ```
