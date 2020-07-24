@@ -1,17 +1,21 @@
 import * as Tests from "./tests.js"
+import * as Utils from "./utils.js"
 
 async function runTests(){
-    let dataset = await Tests.createDataset()
+    let token = await Utils.getToken()
+    let dataset = await Tests.createDataset(token)
     console.log("CreateDataset", dataset)
-    let uploadResult = await Tests.uploadData(dataset.id)
+    let uploadResult = await Tests.uploadData(token, dataset.id)
     console.log("UploadData",uploadResult)
-    let inferResult = await Tests.inferSchema(dataset.id)
+    let inferResult = await Tests.inferSchema(token, dataset.id)
     console.log("InferSchema",inferResult);
-    let publishResult = await Tests.publishDataset(dataset.id)
+    let uploadMetdataResult = await Tests.uploadMetadata(token, dataset.id)
+    console.log("UploadMetadata", uploadMetdataResult)
+    let publishResult = await Tests.publishDataset(token, dataset.id)
     console.log("PublishDataset",publishResult)
-    let queryResult = await Tests.queryDataset(dataset.id)
+    let queryResult = await Tests.queryDataset(token, dataset.id)
     console.log("QueryDataset",queryResult)
-    let deleteResult = await Tests.deleteDataset(dataset.id)
+    let deleteResult = await Tests.deleteDataset(token, dataset.id)
     console.log("DeleteDataset", deleteResult)
 }
 

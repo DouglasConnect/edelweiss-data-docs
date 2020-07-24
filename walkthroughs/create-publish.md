@@ -27,15 +27,23 @@ The steps to publish a new Dataset are as follows
 6. Query the Dataset
 7. Delete a Dataset
 
+For the rest of this walkthrough we will need to declare a few global contants
+
+```js
+let baseUrl = "https://api.edelweissdata.com/datasets"
+let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
+let token = "XXXXXXXXXXXXXXXX" //Replace with your API Token
+```
+
+So with that out of the way..
+
 ### Create a Dataset
 
 We start by creating a dataset. By default when a dataset is created it is in the InProgress State. In this state you can make modifications and updates but at the moment, the Dataset is empty
 
 **Code**:
 ```js
-let token = "XXXXXXXXXXXXXXXX" //Replace with your API Token
 const data = { name: 'my-dataset' };
-let baseUrl = "https://api.edelweissdata.com/datasets"
 
 let fetchOptions = {
     method: 'POST',
@@ -77,11 +85,6 @@ Now that we have a dataset created, we need to populate it with data. We need to
 **Code:**
 
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
-
-let baseUrl = "https://api.edelweissdata.com/datasets";
-
 let formData = new FormData();
 formData.append("data", file)
 
@@ -155,9 +158,6 @@ To do this, we simply call the `Infer Schema` endpoint as follows
 **Code:**
 
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
-
 let fetchOptions = {
     method: 'POST',
     headers: {
@@ -210,9 +210,6 @@ The schema inference works very well for basic Datatypes however, there are situ
 
 **Code:**
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
-
 let data = {
     schema: [
         {
@@ -284,8 +281,6 @@ We have successfully infered the schema, at this point we can actually move on t
 
 **Code:**
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
 
 let description = `
     # My Dataset
@@ -296,29 +291,14 @@ let description = `
 
 let metadata = {
     name: "my-dataset",
-    author: "Jane Doe"
-    location: "Basel, Switzerland",
+    author: "Jane Doe",
+    location: "Basel, Switzerland"
 }
 
 let datasetInfo = {
-  "name": "string",
-  "description": "string",
+  "name": "my-dataset",
+  "description": description,
   "metadata": metadata
-}
-
-let data = {
-    schema: [
-        {
-            "name": "FirstName",
-            "dataType": "xsd:string"
-            "description": "First Name"
-        },
-        {
-            "name": "LastName",
-            "dataType": "xsd:string"
-            "description": "Last Name"
-        }
-    ]
 }
 
 let fetchOptions = {
@@ -327,7 +307,7 @@ let fetchOptions = {
         'Content-Type': 'application/json',
         'Authorization': `bearer ${token}`
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(datasetInfo),
 }
 
 fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
@@ -380,8 +360,6 @@ As a result, we need to provide a helpful changelog message that will helps us u
 **Code:**
 ```js
 const data = { changelog: 'Initial Version' };
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
 
 let fetchOptions = {
     method: 'POST',
@@ -471,8 +449,6 @@ See [Query Language](query.md) for more details about the query language.
 
 **Code:**
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
 let version = "1"
 
 let queryString = JSON.stringify(query)
@@ -486,7 +462,7 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${query}`, fetchOptions)
+fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${queryString}`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -518,9 +494,6 @@ fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${query}`, fetchOp
 To delete a dataset we simply need send a delete request. Keep in mind that this deletes the dataset and all versions of the dataset
 
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
-
 let fetchOptions = {
     method: 'DELETE',
     headers: {

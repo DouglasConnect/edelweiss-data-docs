@@ -8,6 +8,12 @@ export async function ensureSuccessful (response) {
     }
 }
 
+export async function getToken(){
+    let response = await fetch("/token.jwt")
+    await ensureSuccessful(response)
+    return response.text()
+}
+
 export function log(message, type) {
     let logType = type || "success"
     let logTypes = {

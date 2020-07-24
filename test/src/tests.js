@@ -1,14 +1,9 @@
 import {log, logError, ensureSuccessful} from './utils.js'
 
-async function getToken(){
-    let response = await fetch("/token.jwt")
-    await ensureSuccessful(response)
-    return response.text()
-}
+let baseUrl = "https://api.edelweissdata.com/datasets"
 
-export async function createDataset(){
+export async function createDataset(token){
     try {
-        let token = await getToken()
         const data = { name: 'my-dataset' };
         let fetchOptions = {
             method: 'POST',
@@ -19,7 +14,7 @@ export async function createDataset(){
             body: JSON.stringify(data),
         };
 
-        let response = await fetch("https://api.edelweissdata.com/datasets/create", fetchOptions);
+        let response = await fetch(`${baseUrl}/create`, fetchOptions);
         await ensureSuccessful(response);
 
         let dataset = await response.json();
@@ -32,18 +27,15 @@ export async function createDataset(){
     }
 }
 
-let lines = [
-    '"FirstName","LastName"\n',
-    '"John","Doe"\n',
-    '"Jane","Doe"\n'
-]
-let file = new File(lines, "test.csv")
-
-export async function uploadData(datasetId){
+export async function uploadData(token, datasetId){
     try
     {
-        let token = await getToken()
-        let baseUrl = "https://api.edelweissdata.com/datasets";
+        let lines = [
+            '"FirstName","LastName"\n',
+            '"John","Doe"\n',
+            '"Jane","Doe"\n'
+        ]
+        let file = new File(lines, "test.csv")
 
         let formData = new FormData();
         formData.append("data", file)
@@ -68,12 +60,9 @@ export async function uploadData(datasetId){
     }
 }
 
-export async function inferSchema(datasetId){
+export async function inferSchema(token, datasetId){
     try
     {
-        let token = await getToken()
-        let baseUrl = "https://api.edelweissdata.com/datasets";
-
         let fetchOptions = {
             method: 'POST',
             headers: {
@@ -93,12 +82,52 @@ export async function inferSchema(datasetId){
     }
 }
 
-export async function publishDataset(datasetId){
+
+export async function uploadMetadata(token, datasetId) {
+    try {
+
+        let description = `
+            # My Dataset
+            **by Jane Doe**
+
+            Description of the Dataset in Markdown
+        `
+
+        let metadata = {
+            name: "my-dataset",
+            author: "Jane Doe",
+            location: "Basel, Switzerland",
+        }
+
+        let datasetInfo = {
+            "name": "my-dataset",
+            "description": description,
+            "metadata": metadata
+        }
+
+        let fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${token}`
+            },
+            body: JSON.stringify(datasetInfo),
+        }
+
+        let response = await fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions);
+        await ensureSuccessful(response)
+        let data = await response.json();
+        log("UploadMetadata: Metadata and Description was uploaded successful")
+    }
+    catch(error)
+    {
+        logError(`UploadMetadata: ${error}`)
+    }
+}
+
+export async function publishDataset(token, datasetId){
     try
     {
-        let token = await getToken()
-        let baseUrl = "https://api.edelweissdata.com/datasets";
-
         const data = { changelog: 'Initial Version' };
         let fetchOptions = {
             method: 'POST',
@@ -121,11 +150,9 @@ export async function publishDataset(datasetId){
     }
 }
 
-export async function queryDataset(datasetId){
+export async function queryDataset(token, datasetId){
     try
     {
-        let token = await getToken()
-        let baseUrl = "https://api.edelweissdata.com/datasets";
         let version = 1;
 
         let query = {
@@ -152,12 +179,9 @@ export async function queryDataset(datasetId){
     }
 }
 
-export async function deleteDataset(datasetId){
+export async function deleteDataset(token, datasetId){
     try
     {
-        let token = await getToken()
-        let baseUrl = "https://api.edelweissdata.com/datasets";
-
         const data = { changelog: 'Initial Version' };
         let fetchOptions = {
             method: 'DELETE',
