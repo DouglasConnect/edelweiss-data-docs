@@ -8,7 +8,7 @@ A published dataset is versioned and as such cannot be modified. In order to mod
 
 Keep in mind that the old version is still available
 
-<p>&nbsp;</p>
+**Dataset Lifecycle Flow**
 
 ![Dataset LifeCycle](images/dataset-lifecycle.png)
 
