@@ -30,9 +30,9 @@ The steps to publish a new Dataset are as follows
 For the rest of this walkthrough we will need to declare a few global contants
 
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"
-let token = "XXXXXXXXXXXXXXXX" //Replace with your API Token
+let baseUrl = "https://api.edelweissdata.com/datasets"  // Points to the specific Edelweiss API url
+let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"  // A dataset Id
+let token = "XXXXXXXXXXXXXXXX"                          //Your API Token
 ```
 
 So with that out of the way..
