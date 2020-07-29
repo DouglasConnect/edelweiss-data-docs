@@ -10,10 +10,4 @@ api.authenticate()
 
 token = api.auth.generate_jwt()
 
-path = path.abspath("../test/src/token.jwt")
-
-file = open(path, "w")
-file.write(token)
-file.close()
-
 print(token)

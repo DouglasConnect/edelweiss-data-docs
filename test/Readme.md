@@ -13,13 +13,14 @@ To generate the token, simply navigate to the python folder and run the followin
 virtualenv env
 
 # activate the python environment
-./env/Scripts/activate
+./env/Scripts/activate # Windows
+./env/bin/activate     # Mac or Linux
 
 # install the requirements
 pip install -r requirements.txt
 
 # Execute the script to generate the token
-python authenticate.py
+python authenticate.py > '../test/src/token.jwt'
 ```
 
 This will generate a `token.jwt` file with your access token

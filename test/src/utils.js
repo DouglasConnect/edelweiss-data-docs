@@ -1,8 +1,5 @@
-export function succeeded (response) {
-    return response.status >= 200 && response.status < 300
-}
 export async function ensureSuccessful (response) {
-    if (!succeeded(response)) {
+    if (response.ok()) {
         let data = await response.text()
         throw `${response.status} ${data}`;
     }
