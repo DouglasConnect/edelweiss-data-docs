@@ -1,5 +1,5 @@
 export async function ensureSuccessful (response) {
-    if (response.ok()) {
+    if (response.ok) {
         let data = await response.text()
         throw `${response.status} ${data}`;
     }
