@@ -159,10 +159,16 @@ There are a few additional capabilities that fall outside the range of the usual
 
 ## Casts
 
-The final element of the EdelweissData™ Query Language are casts. Because the query language uses a simple type system, EdelweissData is usually able to infer all necessary casts and it is rarely necessary for a user to explicity specify these. There are some edge cases where it can be necessary though which is why they are available as query expressions.
+The final element of the EdelweissData™ Query Language are casts. Because the query language uses a simple type system, EdelweissData is usually able to infer all necessary casts and it is rarely necessary for a user to explicity specify these. There are some edge cases where it can be necessary though which is why they are available as query expressions. Two types of cast exist - strict casts which make the query fail if a cast is specified between incompatible types, and lenient casts which result in a `null` value if a cast is impossible.
 
-`cast` attempts to cast from one datatype to another. The possible datatypes are [listed here](create-publish.md#upload-the-schema). The first subexpression is the expression to cast, the second string argument is the datatype identifier of the type to cast to.
+`cast` or `strictCast` attempts to cast from one datatype to another, failing if the cast is impossible. The possible datatypes are [listed here](create-publish.md#upload-the-schema). The first subexpression is the expression to cast, the second string argument is the datatype identifier of the type to cast to.
 
 ```JSON
 { "cast": [["test"], "xsd:string"]}
+```
+
+`lenientCast` attempts to cast from one datatype to another, returning null if the cast is not possible. The possible datatypes are [listed here](create-publish.md#upload-the-schema). The first subexpression is the expression to cast, the second string argument is the datatype identifier of the type to cast to.
+
+```JSON
+{ "lenientCast": [["test"], "xsd:string"]}
 ```
