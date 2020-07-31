@@ -4,9 +4,7 @@ This Project is designed to act as a sanity check for the snippets in the Docume
 
 ## Authentication
 
-For now, you will need to first generate an access token using the python client and then replace it in the [tests.js](./src/tests.js#L3) file
-
-To generate the token, simply navigate to the python folder and run the following
+#### Step1: Generate a refresh token
 
 ```bash
 # we create the python environment
@@ -19,11 +17,26 @@ virtualenv env
 # install the requirements
 pip install -r requirements.txt
 
-# Execute the script to generate the token
-python authenticate.py > '../test/src/token.jwt'
+# Execute the script to print the token
+python authenticate.py
 ```
 
-This will generate a `token.jwt` file with your access token
+#### Step2: Provide refresh token to the nodejs server.
+
+Either export an environment variable
+
+```bash
+export REFRESH_TOKEN={{ your refresh token }}
+```
+
+or create a `config.user.js` file with this content:
+
+```javascript
+module.exports = {
+  refreshToken: '{{ your refresh token }}',
+}
+```
+
 
 ## Execute Tests
 To run simply navigate to the test directory and then from there execute the following commands

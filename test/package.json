@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Test Project for Documentation Scripts",
   "scripts": {
-    "start": "light-server -s src -o -w **"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "light-server": "^2.7.0"
+    "node-fetch": "^2.6.0",
+    "node-static": "^0.7.11"
   }
 }
