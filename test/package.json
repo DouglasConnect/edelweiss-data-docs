@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "Test Project for Documentation Scripts",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server",
+    "authenticate": "node cli authenticate"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.0",
-    "node-static": "^0.7.11"
+    "node-static": "^0.7.11",
+    "yargs": "^15.4.1"
   }
 }

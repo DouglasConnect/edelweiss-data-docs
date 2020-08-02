@@ -53,7 +53,7 @@ const fetchAccessToken = async (oidcConfig) => {
   return decoded['access_token'];
 }
 
-const fileServer = new nStatic.Server('./public');
+const fileServer = new nStatic.Server('../public');
 const server = http.createServer(async (req, res) => {
   if (req.url === '/config.json') {
     try {

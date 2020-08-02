@@ -2,23 +2,19 @@
 
 This Project is designed to act as a sanity check for the snippets in the Documentation.
 
+## Setup
+
+```bash
+## Install Dependencies
+yarn install
+```
+
 ## Authentication
 
 #### Step1: Generate a refresh token
 
 ```bash
-# we create the python environment
-virtualenv env
-
-# activate the python environment
-./env/Scripts/activate # Windows
-./env/bin/activate     # Mac or Linux
-
-# install the requirements
-pip install -r requirements.txt
-
-# Execute the script to print the token
-python authenticate.py
+yarn run authenticate
 ```
 
 #### Step2: Provide refresh token to the nodejs server.
@@ -29,7 +25,7 @@ Either export an environment variable
 export REFRESH_TOKEN={{ your refresh token }}
 ```
 
-or create a `config.user.js` file with this content:
+or create a file `server/config.user.js` file with this content:
 
 ```javascript
 module.exports = {
@@ -37,14 +33,16 @@ module.exports = {
 }
 ```
 
+## Directory contents
+
+* [public](./public) contains the front-end html and javascript for running tests against the edelweiss api.
+* [server](./server) is a http webserver that handles authentication and serves the static html/javascript files.
+* [cli](./cli) is a command line program for interacting with the edelweiss server. Currently it just implements authentication, but its functionality could be extended.
 
 ## Execute Tests
 To run simply navigate to the test directory and then from there execute the following commands
 
 ```bash
-## Install Dependencies
-yarn install
-
 ## Run Test Page
 yarn start
 ```
