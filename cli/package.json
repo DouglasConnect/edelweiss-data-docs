@@ -1,0 +1,14 @@
+{
+  "name": "edelweiss-docs-cli",
+  "version": "0.1.0",
+  "description": "CLI for EdelweissData",
+  "scripts": {
+    "authenticate": "node cli authenticate"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "yargs": "^15.4.1"
+  }
+}

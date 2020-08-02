@@ -1,6 +1,8 @@
 const http = require('http');
 const nStatic = require('node-static');
 const fetch = require('node-fetch');
+const path = require('path');
+
 
 // Loads configuration from the config.default.js and config.user.js files
 const globalConfig = (function() {
@@ -53,7 +55,7 @@ const fetchAccessToken = async (oidcConfig) => {
   return decoded['access_token'];
 }
 
-const fileServer = new nStatic.Server('../public');
+const fileServer = new nStatic.Server(path.join(__dirname, '..', 'public'));
 const server = http.createServer(async (req, res) => {
   if (req.url === '/config.json') {
     try {

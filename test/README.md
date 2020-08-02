@@ -13,6 +13,8 @@ yarn install
 
 #### Step1: Generate a refresh token
 
+Run this command from the root of this repo:
+
 ```bash
 yarn run authenticate
 ```
