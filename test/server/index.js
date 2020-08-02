@@ -1,3 +1,4 @@
+"use strict";
 const http = require('http');
 const nStatic = require('node-static');
 const fetch = require('node-fetch');

@@ -1,3 +1,5 @@
+"use strict";
+
 require('yargs')
   .option('url', {
     describe: 'Base edelweiss url',

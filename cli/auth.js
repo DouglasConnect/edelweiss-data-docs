@@ -1,3 +1,4 @@
+"use strict";
 const fetch = require('node-fetch');
 
 /* This module implements the Device Authorization flow.
@@ -16,11 +17,11 @@ const fetchOidcConfig = async (edelweissUrl) => {
   return await response.json();
 }
 
-const fetchDeviceCode = async (oidcConfig) => {
+const fetchDeviceCode = async (oidcConfig, offline) => {
   const url = `https://${oidcConfig.domain}/oauth/device/code`;
   const payload = {
     'client_id': oidcConfig.nativeClientId,
-    'scope': "offline_access",
+    'scope': offline ? "offline_access" : undefined,
     'audience': oidcConfig.audience,
   };
   const response = await fetch(url, {
@@ -77,10 +78,14 @@ const pollToken = async (oidcConfig, deviceCodeResponse) => {
 
 exports.command = ['authenticate', 'auth'];
 exports.desc = 'Generate access and refresh tokens';
+exports.builder = (yargs) =>
+  yargs.option('refresh-token', {
+    describe: 'Generate a refresh token for offline use',
+  });
 
 exports.handler = async (args) => {
   const oidcConfig = await fetchOidcConfig(args.url);
-  const deviceCodeResponse = await fetchDeviceCode(oidcConfig);
+  const deviceCodeResponse = await fetchDeviceCode(oidcConfig, args['refresh-token']);
 
   promptUser(deviceCodeResponse);
 
