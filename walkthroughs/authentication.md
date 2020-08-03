@@ -8,21 +8,22 @@ There are two types of Tokens for authenticating with EdelweissData API. They ar
 2. Refresh Token
 
 ## Access Tokens
-This is the primary way of authenticating with the EdelweissData API. These Tokens are short lived and will expire after a few minutes. This is great if you simply want to execute a script against your datasets.
+This is the primary way of authenticating with the EdelweissData API. These Tokens are short lived and will expire after a few minutes. This is great if you simply want to execute a script against your datasets. Because they are short lived, It's relatively safe to share scripts that contain these tokens.
 
-Because they are short lived, It's relatively safe to share scripts that contain these tokens.
-
-The Edelweiss Data API uses bearer tokens in HTTP requests in order to authenticate the requester and to allow access to protected datasets.
+The Bearer tokens are supplied in the HTTP requests in order to authenticate the requester and to allow access to protected datasets.
 
 For example, sending a bearer token with fetch request to list datasets:
 
 ```js
-fetch(`${baseUrl}/datasets`, {
+let edelweissUrl = "https://api.edelweissdata.com"
+fetch(`${edelweissUrl}/datasets`, {
     headers: {
         'Authorization': `bearer ${token}`
     },
 })
 ```
+
+### Generating Access Tokens
 There are typically two ways to generate an access token, They are:
 
 - From Edelweiss UI
@@ -111,12 +112,12 @@ This will display something similar to the following
 ### Generating an Access Token using a Refresh Token
 In order to generate an access token using code, first you will need the native client id. you can retrieve this from the `/oidc` endpoint e.g. simply call
 ```javascript
-fetch(`${baseUrl}/oidc`, { method: 'GET' })
-	.then(response  =>  response.json())
-	.then(data  =>  console.log('Success:', data))
-	.catch((error) => {
-		console.error('Error:', error);
-	});
+fetch(`${edelweissUrl}/oidc`, { method: 'GET' })
+    .then(response  =>  response.json())
+    .then(data  =>  console.log('Success:', data))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 ```
 and you will get an output like this
 
@@ -124,7 +125,7 @@ and you will get an output like this
 {
     "domain":  "edelweiss.eu.auth0.com",
     "audience":  "https://api.edelweissdata.com",
-	"nativeClientId":  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "nativeClientId":  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     "webClientId":  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 }
 ```
@@ -139,30 +140,30 @@ formData.append('client_id', nativeClientId);
 formData.append('refresh_token', refreshToken);
 
 let  fetchOptions = {
-	method:  'POST',
-	headers: {
-		'Content-Type':  'application/x-www-form-urlencoded'
-	},
-	body:  formData
+    method:  'POST',
+    headers: {
+        'Content-Type':  'application/x-www-form-urlencoded'
+    },
+    body:  formData
 }
 
 fetch(`${domain}/oauth/token`, fetchOptions)
-	.then(response  =>  response.json())
-	.then(data  =>  console.log('Success:', data))
-	.catch((error) => {
-		console.error('Error:', error);
-	});
+    .then(response  =>  response.json())
+    .then(data  =>  console.log('Success:', data))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 ```
 
 and you should get an output like this
 
 ```json
 {
-	"access_token": "eyJhbGciOiJSUzI1NiIsInR......RMQMsHnT_z-Ta21_d_Aq9lXT9w",
-	"expires_in": 86400,
-	"scope": "openid offline_access",
-	"id_token": "eyJhbGciOiJSUzI1cv1dGbwc......NFZJKyS43kt4HoWR7wlaUFaDQ",
-	"token_type": "Bearer"
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR......RMQMsHnT_z-Ta21_d_Aq9lXT9w",
+    "expires_in": 86400,
+    "scope": "openid offline_access",
+    "id_token": "eyJhbGciOiJSUzI1cv1dGbwc......NFZJKyS43kt4HoWR7wlaUFaDQ",
+    "token_type": "Bearer"
 }
 ```
 which contains your access token and returns the lifetime of the access token in seconds
