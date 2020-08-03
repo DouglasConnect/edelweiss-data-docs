@@ -86,7 +86,7 @@ As convenient as Access Tokens are, this approach will not work for applications
 
 That's where refresh tokens come in. They almost an equivalent to a username/password pair for the User so applications can use them to generate access tokens automatically without requiring the user to login
 
-However, unlike Access Tokens, they are very sensitive and long lived so you need to be careful where you store them as whoever has access to them can impersonate the User. 
+However, unlike Access Tokens, they are very sensitive and long lived so you need to be careful where you store them as whoever has access to them can impersonate the User.
 
 ### Generating a Refresh Token
 You can only generate the refresh token using the Edelweiss Data CLI.
@@ -100,11 +100,11 @@ yarn run authenticate --refresh-token
 This will display something similar to the following
 ```json
 {
-  access_token: 'eyJhbGciOiJSUzI1NiIsInR......RMQMsHnT_z-Ta21_d_Aq9lXT9w',
-  refresh_token: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-  scope: 'offline_access',
-  expires_in: 86400,
-  token_type: 'Bearer'
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR......RMQMsHnT_z-Ta21_d_Aq9lXT9w",
+    "refresh_token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "scope": "offline_access",
+    "expires_in" : 86400,
+    "token_type": "Bearer"
 }
 ```
 
@@ -120,12 +120,12 @@ fetch(`${baseUrl}/oidc`, { method: 'GET' })
 ```
 and you will get an output like this
 
-```json 
+```json
 {
-    domain:  "edelweiss.eu.auth0.com",
-    audience:  "https://api.edelweissdata.com",
-	nativeClientId:  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    webClientId:  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    "domain":  "edelweiss.eu.auth0.com",
+    "audience":  "https://api.edelweissdata.com",
+	"nativeClientId":  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "webClientId":  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 }
 ```
 
@@ -157,12 +157,12 @@ fetch(`${domain}/oauth/token`, fetchOptions)
 and you should get an output like this
 
 ```json
-{ 
-	"access_token": "eyJ...MoQ", 
-	"expires_in": 86400, 
-	"scope": "openid offline_access", 
-	"id_token": "eyJ...0NE", 
-	"token_type": "Bearer" 
+{
+	"access_token": "eyJ...MoQ",
+	"expires_in": 86400,
+	"scope": "openid offline_access",
+	"id_token": "eyJ...0NE",
+	"token_type": "Bearer"
 }
 ```
-which contains your access token and returns the lifetime of the access token in seconds 
+which contains your access token and returns the lifetime of the access token in seconds
