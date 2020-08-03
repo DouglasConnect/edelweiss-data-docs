@@ -33,4 +33,9 @@ To get your access token simply login you simply take the following steps
 
 
 ## Refresh Tokens
---
+
+As convinient as Access Tokens are, this approach will not work for applications that have to run on behalf of the user. In this case we need a way to generate access tokens without exposing the username and password.
+
+That's where referesh tokens come in. They represent a username/password pair for the user so applications can use them to generate access tokens automatically
+
+However, unlike Access Tokens, they are very sensitive and long lived so you need to be careful where you store them and who has access to them as anyone with the referesh token can impersonate the User
