@@ -1,14 +1,14 @@
 export async function ensureSuccessful (response) {
-    if (response.ok) {
-        let data = await response.text()
+    if (!response.ok) {
+        const data = await response.text()
         throw `${response.status} ${data}`;
     }
 }
 
-export async function getToken(){
-    let response = await fetch("/token.jwt")
+export async function getConfig() {
+    let response = await fetch("/config.json")
     await ensureSuccessful(response)
-    return response.text()
+    return response.json()
 }
 
 export function log(message, type) {
