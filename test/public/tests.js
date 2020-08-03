@@ -192,7 +192,7 @@ export async function deleteDataset(config, datasetId){
 
         let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}`, fetchOptions)
         await ensureSuccessful(response)
-        log("DeleteDataset: Data was published Succesfully");
+        log("DeleteDataset: Data was deleted Succesfully");
     }
     catch(error)
     {
