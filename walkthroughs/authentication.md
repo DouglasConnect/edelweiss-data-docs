@@ -158,10 +158,10 @@ and you should get an output like this
 
 ```json
 {
-	"access_token": "eyJ...MoQ",
+	"access_token": "eyJhbGciOiJSUzI1NiIsInR......RMQMsHnT_z-Ta21_d_Aq9lXT9w",
 	"expires_in": 86400,
 	"scope": "openid offline_access",
-	"id_token": "eyJ...0NE",
+	"id_token": "eyJhbGciOiJSUzI1cv1dGbwc......NFZJKyS43kt4HoWR7wlaUFaDQ",
 	"token_type": "Bearer"
 }
 ```
