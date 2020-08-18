@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "description": "Convenient publishing of scientific data with proper versioning, rich metadata support and a powerful API",
   "scripts": {
-    "authenticate": "node cli authenticate",
+    "authenticate": "edelweiss authenticate",
     "test": "cd test && node server",
-    "postinstall": "(cd test && $npm_execpath install); (cd cli && $npm_execpath install)"
-
+    "postinstall": "(cd cli && $npm_execpath install)"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "edelweiss-data-cli": "^0.1.0-alpha.0"
+  }
 }
