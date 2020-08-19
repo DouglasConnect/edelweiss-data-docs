@@ -30,9 +30,9 @@ The steps to publish a new Dataset are as follows
 For the rest of this walkthrough we will need to declare a few global contants
 
 ```js
-let baseUrl = "https://api.edelweissdata.com/datasets"  // Points to the specific Edelweiss API url
-let datasetId = "8e26dca9-477f-4d2f-b979-0a4b5763f359"  // A dataset Id
+let baseUrl = "https://api.edelweissdata.com"  // Points to the specific Edelweiss API url
 let token = "XXXXXXXXXXXXXXXX"                          // Your API Token
+let datasetid = null // variable to hold the datasetId once we create the dataset
 ```
 
 So with that out of the way..
@@ -56,7 +56,7 @@ let fetchOptions = {
 
 fetch(`${baseUrl}/datasets/create`, fetchOptions)
     .then(response => response.json())
-    .then(data => console.log('Success:', data))
+    .then(data => console.log('Success:', data); datasetid = data.id;)
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -80,7 +80,7 @@ fetch(`${baseUrl}/datasets/create`, fetchOptions)
 
 ### Upload data to a Dataset
 
-Now that we have a dataset created, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data`. The api expects the file to be passed as the `data` parameter
+Now that we have a dataset created, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data`. The API expects the file to be passed as the `data` parameter
 
 **Code:**
 
@@ -96,7 +96,7 @@ let fetchOptions = {
     body: formData,
 }
 
-fetch(`${baseUrl}/${datasetid}/in-progress/data/upload`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetid}/in-progress/data/upload`, fetchOptions)
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
@@ -124,7 +124,7 @@ fetch(`${baseUrl}/${datasetid}/in-progress/data/upload`, fetchOptions)
 
 At this point we have our data stored as CSV in Edelweiss Data. However, It is currently stored as a bunch of string values in the Edelweiss Data.
 
-In order to make the data interesting and allow Edelwiess Data make sense of it, we need to supply a schema.
+In order to make the data interesting and allow Edelweiss Data make sense of it, we need to supply a schema.
 
 The schema defines the datatype of the columns in the data. The data types could be simple Data Types like `string`, `integer` or they could be more advanced datatypes like `DateTime` or [Smiles](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
 
@@ -165,7 +165,7 @@ let fetchOptions = {
     }
 }
 
-fetch(`${baseUrl}/${datasetid}/in-progress/schema/infer`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetid}/in-progress/schema/infer`, fetchOptions)
     .then(response => response.json())
     .then(data => {
         console.log('Success:', data);
@@ -204,25 +204,30 @@ fetch(`${baseUrl}/${datasetid}/in-progress/schema/infer`, fetchOptions)
 }
 ```
 
+Schema inference can only infer basic information like the data type. If you use schema inference, consider augmenting the returned schema (e.g. with richer descriptions for each column if you have them) and uploading it again (see the Schema Upload section below for details)
+
 #### Schema Upload
 
-The schema inference works very well for basic Datatypes however, there are situations where you want fine grained control over the schema. To accomplish this we simply need to call the `UpdateDataset` endpoint
+The schema inference works very well for basic data types, however there are situations where you want fine grained control over the schema. To accomplish this we simply need to call the `UpdateDataset` endpoint
 
 **Code:**
 ```js
 let data = {
-    schema: [
-        {
-            "name": "FirstName",
-            "dataType": "xsd:string"
-            "description": "First Name"
-        },
-        {
-            "name": "LastName",
-            "dataType": "xsd:string"
-            "description": "Last Name"
-        }
-    ]
+    schema: {
+        columns:
+        [
+            {
+                "name": "FirstName",
+                "dataType": "xsd:string"
+                "description": "First Name"
+            },
+            {
+                "name": "LastName",
+                "dataType": "xsd:string"
+                "description": "Last Name"
+            }
+        ]
+    }
 }
 
 let fetchOptions = {
@@ -234,7 +239,7 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetId}/in-progress`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -274,10 +279,10 @@ fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
 
 ### Upload Metadata and Description
 
-We have successfully infered the schema, at this point we can actually move on to publish the dataset however, we need to add a few more information to make our dataset useful. They are:
+We have successfully inferred the schema; at this point we can move on to publish the dataset. To make our dataset more useful though, it is a good idea to to add a few additional pieces of information. They are:
 
-1. Description - Markdown Textual Description to help users understand what the data is about
-2. Metadata - A Json object that contains pieces of structured data that is useful to allow other people find the dataset
+1. Description - Markdown textual description to help users understand what the data is about
+2. Metadata - A Json object that contains pieces of structured metadata that is useful to allow other people to find the dataset. To learn more about how metadata can be used effectively, have a look at the [metadata documentation](metadata.md)
 
 **Code:**
 ```js
@@ -286,17 +291,16 @@ let description = `
     # My Dataset
     **by Jane Doe**
 
-    Description of the Dataset in Markdown
+    Description of the Dataset in Markdown. This can contain [links](https://en.wikipedia.org/wiki/Hyperlink) and **formatting**.
 `
 
 let metadata = {
-    name: "my-dataset",
     author: "Jane Doe",
     location: "Basel, Switzerland"
 }
 
 let datasetInfo = {
-  "name": "my-dataset",
+  "name": "My dataset",
   "description": description,
   "metadata": metadata
 }
@@ -310,7 +314,7 @@ let fetchOptions = {
     body: JSON.stringify(datasetInfo),
 }
 
-fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetId}/in-progress`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -322,7 +326,7 @@ fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
 ```json
 {
    "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
-   "name":"my-dataset",
+   "name":"My dataset",
    "schema":{
       "columns":[
          {
@@ -342,7 +346,6 @@ fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
    "created":"2020-07-20T01:48:58.9086970+00:00",
    "description":"# My Dataset...",
    "metadata":{
-        "name": "my-dataset",
         "author": "Jane Doe",
         "location": "Basel, Switzerland",
     },
@@ -352,10 +355,11 @@ fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions)
 
 ### Publish the Dataset
 
-Now that we have inferred a schema for the database, We could publish our Dataset. This also allows Edelweiss Data to Validate the schema and also pre-compute some information about our data.
+Now that we have a schema for the dataset and added metadata and a description we can publish our dataset. In the publishing step Edelweiss Data will validate the schema and also pre-compute some information about our data.
 
-Publishing a Dataset creates a new version of that Dataset. Each version after being published cannot be changed rather you can create new versions to replace earlier versions.
-As a result, we need to provide a helpful changelog message that will helps us understand what this version is about
+Publishing a Dataset creates a new version of that Dataset. Once published, a version cannot be changed. If you want to update the dataset you can create a new version. The old version will still be available though. In the URL scheme of EdelweissData™ all endpoints that reference published datasets specify either a specific version by number (starting at 1), or the special version string `latest` to indicate that we want to retrieve whatever is the newest version of this dataset.
+
+To document the reason behind publishing new version we need to provide a helpful changelog message when we publish a new version:
 
 **Code:**
 ```js
@@ -370,7 +374,7 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetId}/in-progress/publish`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -380,7 +384,10 @@ fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
 **Response:**
 ```json
 {
-   "id":"8e26dca9-477f-4d2f-b979-0a4b5763f359",
+   "id": {
+      "id": "8e26dca9-477f-4d2f-b979-0a4b5763f359",
+      "version": 1
+   },
    "name":"my-dataset",
    "schema":{
       "columns":[
@@ -405,7 +412,8 @@ fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
         "author": "Jane Doe",
         "location": "Basel, Switzerland",
     },
-   "dataSource":null
+   "dataSource":null,
+   "isPublic": true
 }
 ```
 
@@ -414,7 +422,7 @@ fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
 
 When we want to query the Dataset, we use need to supply the datasetId and version number. In the event that you don't want to specify the version you can use the `latest` moniker
 
-It also leverages a powerful query languge that allows you to slice and filter the data the endpoint returns.
+When querying the data you can also leverage a powerful query language that allows you to filter and order the data.
 
 For example the query in the snippet, filters the data where the column `State` contains the word `baden`
 
@@ -462,7 +470,7 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${queryString}`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetId}/versions/${version}/data?query=${queryString}`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -491,7 +499,7 @@ fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${queryString}`, f
 
 
 ### Delete a Dataset
-To delete a dataset we simply need send a delete request. Keep in mind that this deletes the dataset and all versions of the dataset
+To delete a dataset simply send a delete request. Keep in mind that this deletes the dataset and all versions of the dataset
 
 ```js
 let fetchOptions = {
@@ -502,7 +510,7 @@ let fetchOptions = {
     }
 }
 
-fetch(`${baseUrl}/${datasetId}`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetId}`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
