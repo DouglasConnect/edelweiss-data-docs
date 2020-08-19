@@ -4,7 +4,7 @@ EdelweissData™ has a rich Query language that allows you to filter and sort bo
 
 To make it easy to get familiar with the Query Language this walkthrough is divided into two sections: an overview of the Query language and then an enumeration of the different types of expressions with examples.
 
-A useful way to get familiar with the Query Language is also to view a dataset in the [EdelweissData™ DataExplorer](https://edelweissdata.com/dataset), filter the data by filling search fields and ordering it by clicking the icons and then clicking the "API" button in the top right corner to copy/paste the code including the Query expression to filter & order data rows just like you see it.
+A useful way to get familiar with the Query Language is also to view a dataset in the [EdelweissData™ DataExplorer](https://edelweissdata.com/dataset), filter the data by filling search fields in the UI and ordering it by clicking the icons and then clicking the "API" button in the top right corner to copy/paste the code including the Query expression to filter & order data rows just like you see it in the DataExplorer.
 
 ## Overview
 
@@ -20,7 +20,7 @@ High level equivalent:
 exactSearch(column("location"), "Germany")
 ```
 
-The JSON serialisation we chose is very flexible, easily adaptable with future extensions and easy to correctly parse and construct in various languages - but it looks a bit odd the first time you see it. The JSON serialisation is an [S-Expression](https://en.wikipedia.org/wiki/S-expression) encoded as JSON, something that you might be familiar with if you ever had contact with the Lisp programming language or a descendant - but it doesn't matter if you don't.
+The JSON serialisation we chose is very flexible, easily adaptable with future extensions and easy to correctly parse and construct in various languages - but it looks a bit odd the first time you see it. The JSON serialisation is an [S-Expression](https://en.wikipedia.org/wiki/S-expression) encoded as JSON, something that you might be familiar with if you ever had contact with the Lisp programming language or a descendant - but it doesn't matter if you aren't.
 
 The JSON serialisation always follows the same, rigid layout: everything is either encoded as a **direct value** (e.g. `"Germany"` above or numeric literals), or as an **operation** that is a JSON object with the operation name as the key and an array of sub-expressions as the entries of the array.
 
@@ -41,23 +41,27 @@ exactSearch(column("location"), "Germany") AND column("new_cases") > 100
 
 ## Applications
 
-The Query Language can be used with EdelweissData™ API Endpoints that queries for datasets ([/datasets](https://api.edelweissdata.com/docs/index.html#operations-Published-getPublishedDatasetsViaPost)) as well as those that query for data of an individual dataset ([/datasets/{datasetId}/versions/{version}/data](https://api.edelweissdata.com/docs/index.html#operations-Published-postPublishedDatasetData)). In both cases it can be used to specify the sorting of the data and to filter rows. In the sorting case then Expression has to evaluate to a numeric or textual value (i.e. not a boolean), for the filtering the expression has to evaluate to a boolean value (i.e. whether or not to include a row).
+The Query Language can be used with EdelweissData™ API Endpoints that queries for datasets ([/datasets](https://api.edelweissdata.com/docs/index.html#operations-Published-getPublishedDatasetsViaPost)) as well as those that query for data of an individual dataset ([/datasets/{datasetId}/versions/{version}/data](https://api.edelweissdata.com/docs/index.html#operations-Published-postPublishedDatasetData)). In both cases it can be used to specify the sorting of the data and to filter rows. In the sorting case the Expression has to evaluate to a numeric or textual value (i.e. not a boolean), for the filtering the expression has to evaluate to a boolean value (i.e. whether or not to include a row).
 
 # Elements of the Query Language
 
 ## Values
 
-Values are the simplest elements of a Query and are used verbatim (i.e. there is no special escaping etc necessary, they are simply JSON values). You can either use string values (in quotes, e.g. `"Germany"`), numbers (e.g. `4` or `3.2` or `2.384e12`), arrays (JSON style arrays, i.e. `[2.0, 3.0, 4.0]`) or JSON objects (e.g. `{"some-key": "some-value"}`). Of these, strings and numbers are by far used the most. Arrays can be useful for contains queries (where you want to know if a column contains the values of the given array). Objects are only used occasionally when doing queries for datasets that include parts of the metadata that can of course contain nested objects.
+Values are the simplest elements of a Query and are used verbatim (i.e. there is no special escaping etc necessary, they are simply JSON values). You can either use string values (in quotes, e.g. `"Germany"`), numbers (e.g. `4` or `3.2` or `2.384e12`), arrays (JSON style arrays, i.e. `[2.0, 3.0, 4.0]`) or JSON objects (e.g. `{"some-key": "some-value"}`). Of these, strings and numbers are by far used the most. Arrays can be useful for contains queries (where you want to know if a column of an array data type contains the values of the given array). Objects are only used occasionally when doing queries for datasets that include parts of the metadata that can of course contain nested objects.
 
 ## Columns
 
-Column expression reference a given column by name. Columns are expressions and thus encoded in the usual form as an object with key `column` and an array that contains the string literal value of the column name:
+Column expression reference a given column by name and return the value in the column of the given name. Columns are expressions and thus encoded in the usual form as an object with key `column` and an array that contains the string literal value of the column name:
 
 ```JSON
 { "exactSearch": [{ "column": ["location"] }, "Germany"] }
 ```
 
-Queries that query for datasets can use JSONpaths to map fragments of the metadata into new columns with names supplied with the JSONpath. To distinguish between always existing columns like the dataset name (`name`) or the creation timestamp (`created`) and user defined column names, there exist the
+Queries that query for datasets can use JSONpaths to map fragments of the metadata into new columns with names supplied with the JSONpath. To distinguish between always existing columns like the dataset name (`name`) or the creation timestamp (`created`) and user defined column names, there exist the special `systemColumn` expression that is used for system specified columns, e.g. to search for a dataset with the name "RNA Sequencing dataset 23" the following expression would be used to indicate that we want to search in the system defined name column, not a column with the same name that was constructed with a JSONpath query:
+
+```JSON
+{ "exactSearch": [{ "systemColumn": ["name"] }, "RNA Sequencing dataset 23"] }
+```
 
 ## Text searches
 
@@ -99,7 +103,7 @@ Relations express the usual comparisions: equality (`eq`), greaterThan (`gt`), g
 { "lte": [  {"column": ["new_cases"] },  {"column": ["new_deaths"] } ] }
 ```
 
-In addition to the usual subjects above there exist two special relations, `contains` and `containedIn` that check if the first subexpression is contained within the second (`contains`) or vice versa (`containedIn`).
+In addition to the usual suspects above there exist two special relations, `contains` and `containedIn` that check if the first subexpression is contained within the second (`contains`) or vice versa (`containedIn`).
 
 ```JSON
 { "contains": [ [1, 2], [1, 2, 3, 4, 5] ] }
@@ -111,7 +115,7 @@ In addition to the usual subjects above there exist two special relations, `cont
 
 ## Logical operators
 
-The usual logical operators are supported: `not` (unary), `and` and `or` (both binary). All require boolean subexpressions and evaluate in turn to a boolean value.
+The usual logical operators are supported: `not` (unary), `and` and `or` (both n-ary). All require boolean subexpressions and evaluate in turn to a boolean value. Since both `and` and `or` are n-ary, you can combine an arbitrary number of subexpressions with either of these operators in one expression.
 
 ```JSON
 {
@@ -125,7 +129,8 @@ The usual logical operators are supported: `not` (unary), `and` and `or` (both b
 {
   "and": [
     { "exactSearch": [{ "column": ["location"] }, "Germany"] },
-    { "gt": [{ "column": ["new_cases"] }, 100] }
+    { "gt": [{ "column": ["new_cases"] }, 100] },
+    { "lt": [{ "column": ["new_deaths"] }, 10] }
   ]
 }
 ```
@@ -144,7 +149,7 @@ The usual logical operators are supported: `not` (unary), `and` and `or` (both b
 
 There are a few additional capabilities that fall outside the range of the usualy query vocabulary. These revolve around specific domain types, notably the SMILES column type for the chemical structure notation of the same name.
 
-`tanimotoSimilarity` allows you to calculate the [Tanimoto Similarity](https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto_similarity_and_distance) between the molecular fingerprints of the two subexpressions (fingerprinting is currently not customizable and defaults to rdkit fingerprints with default settings). Both subexpressions should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). The expression evaluates to a score between 0 and 1 with 0 being dissimar and 1 being entirely identically fingerprints. `tanimotoSimilarity` can thus be used either directly in `orderBy` clauses or as a filter when used in a relation (e.g. > 0.7). When an orderBy clause with a tanimotoSimilarity is active, the values returned for each row in the first referenced column will be augmented with the calculated similarity score.
+`tanimotoSimilarity` allows you to calculate the [Tanimoto Similarity](https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto_similarity_and_distance) between the molecular fingerprints of the two subexpressions (fingerprinting is currently not customizable and defaults to rdkit fingerprints with default settings). Both subexpressions should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). The expression evaluates to a score between 0 and 1 with 0 being dissimar and 1 being entirely identically fingerprints. `tanimotoSimilarity` can thus be used either directly in `orderBy` clauses or as a filter when used in a relation (e.g. > 0.7). When an orderBy clause with a tanimotoSimilarity is active, the values returned for each row in the first referenced column will be augmented with the calculated similarity score (i.e. the json object that is returned for SMILES columns that is always an object with one key for the original value and one for the canonicalized SMILES string will be augmented with an additional `similarity` key that contains the numerical similarity value)
 
 ```JSON
 // E.g. to be used as an order by expression:
