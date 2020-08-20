@@ -22,7 +22,7 @@ exactSearch(column("location"), "Germany")
 
 The JSON serialisation we chose is very flexible, easily adaptable with future extensions and easy to correctly parse and construct in various languages - but it looks a bit odd the first time you see it. The JSON serialisation is an [S-Expression](https://en.wikipedia.org/wiki/S-expression) encoded as JSON, something that you might be familiar with if you ever had contact with the Lisp programming language or a descendant - but it doesn't matter if you aren't.
 
-The JSON serialisation always follows the same, rigid layout: everything is either encoded as a **direct value** (e.g. `"Germany"` above or numeric literals), or as an **operation** that is a JSON object with the operation name as the key and an array of sub-expressions as the entries of the array.
+The JSON serialisation always follows the same, rigid layout: everything is either encoded as a **direct value** (e.g. `"Germany"` above or numeric literals), or as an **operation** that is a JSON object with the operation name as the key and an array of arguments as the corresponding entries.
 
 Here is a more complex example that extends the above by also filtering to rows where `new_cases` is above 100:
 
@@ -76,12 +76,12 @@ Three text search functions exist in EdelweissData™: `searchAnywhere` which se
 ```
 
 ```JSON
-{ "fuzzySearch": [{ "column": ["location"] }, "Ger"] }
+{ "fuzzySearch": [{ "column": ["location"] }, "erman"] }
 ```
 
 ## Relations
 
-Relations express the usual comparisions: equality (`eq`), greaterThan (`gt`), greaterThanOrEqual(`gte`), lessThan (`lt`), lessThanOrEqual(`lte`). All of these take two subexpressions that are then compared with the result being a boolean value.
+Relations express the usual comparisons: equality (`eq`), greaterThan (`gt`), greaterThanOrEqual(`ge`), lessThan (`lt`), lessThanOrEqual(`le`). All of these take two arguments that are then compared with the result being a boolean value.
 
 ```JSON
 { "eq": [ 0, 100 ] }
@@ -92,7 +92,7 @@ Relations express the usual comparisions: equality (`eq`), greaterThan (`gt`), g
 ```
 
 ```JSON
-{ "gte": [ 12.0, 100 ] }
+{ "ge": [ 12.0, 100 ] }
 ```
 
 ```JSON
@@ -100,22 +100,22 @@ Relations express the usual comparisions: equality (`eq`), greaterThan (`gt`), g
 ```
 
 ```JSON
-{ "lte": [  {"column": ["new_cases"] },  {"column": ["new_deaths"] } ] }
+{ "le": [  {"column": ["new_cases"] },  {"column": ["new_deaths"] } ] }
 ```
 
-In addition to the usual suspects above there exist two special relations, `contains` and `containedIn` that check if the first subexpression is contained within the second (`contains`) or vice versa (`containedIn`).
+In addition to the usual suspects above there exist two special relations, `contains` and `containedIn` that check if the first argument is contains the second (`contains`) or vice versa (`containedIn`).
 
 ```JSON
-{ "contains": [ [1, 2], [1, 2, 3, 4, 5] ] }
+{ "contains": [ [1, 2, 3, 4, 5, 6], [1, 2] ] }
 ```
 
 ```JSON
-{ "containedIn": [ [1, 2, 3, 5, 6], [1, 2] ] }
+{ "containedIn": [ [1, 2], [1, 2, 3, 4, 5, 6] ] }
 ```
 
 ## Logical operators
 
-The usual logical operators are supported: `not` (unary), `and` and `or` (both n-ary). All require boolean subexpressions and evaluate in turn to a boolean value. Since both `and` and `or` are n-ary, you can combine an arbitrary number of subexpressions with either of these operators in one expression.
+The usual logical operators are supported: `not` (unary), `and` and `or` (both n-ary). All require boolean arguments and evaluate in turn to a boolean value. Since both `and` and `or` are n-ary, you can combine an arbitrary number of arguments with either of these operators in one expression.
 
 ```JSON
 {
@@ -147,16 +147,16 @@ The usual logical operators are supported: `not` (unary), `and` and `or` (both n
 
 ## Special functions
 
-There are a few additional capabilities that fall outside the range of the usualy query vocabulary. These revolve around specific domain types, notably the SMILES column type for the chemical structure notation of the same name.
+There are a few additional capabilities that fall outside the range of the usual query vocabulary. These revolve around specific domain types, notably the SMILES column type for the chemical structure notation of the same name.
 
-`tanimotoSimilarity` allows you to calculate the [Tanimoto Similarity](https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto_similarity_and_distance) between the molecular fingerprints of the two subexpressions (fingerprinting is currently not customizable and defaults to rdkit fingerprints with default settings). Both subexpressions should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). The expression evaluates to a score between 0 and 1 with 0 being dissimar and 1 being entirely identically fingerprints. `tanimotoSimilarity` can thus be used either directly in `orderBy` clauses or as a filter when used in a relation (e.g. > 0.7). When an orderBy clause with a tanimotoSimilarity is active, the values returned for each row in the first referenced column will be augmented with the calculated similarity score (i.e. the json object that is returned for SMILES columns that is always an object with one key for the original value and one for the canonicalized SMILES string will be augmented with an additional `similarity` key that contains the numerical similarity value)
+`tanimotoSimilarity` allows you to calculate the [Tanimoto Similarity](https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto_similarity_and_distance) between the molecular fingerprints of the two arguments (fingerprinting is currently not customizable and defaults to rdkit fingerprints with default settings). Both arguments should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). The expression evaluates to a score between 0 and 1 with 0 being dissimilar and 1 being entirely identically fingerprints. `tanimotoSimilarity` can thus be used either directly in `orderBy` clauses or as a filter when used in a relation (e.g. > 0.7). When an orderBy clause with a tanimotoSimilarity is active, the values returned for each row in the first referenced column will be augmented with the calculated similarity score (i.e. the json object that is returned for SMILES columns that is always an object with one key for the original value and one for the canonicalized SMILES string will be augmented with an additional `similarity` key that contains the numerical similarity value)
 
 ```JSON
 // E.g. to be used as an order by expression:
 { "tanimotoSimilarity": [{ "column": ["compound"] }, "c1ccccc1"] }
 ```
 
-`substructureSearch` let's you find chemical substructures where the first subexpression is searched for in the second. Both subexpressions should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). `substructureSearch` evaluates to a boolean value.
+`substructureSearch` let's you find chemical substructures where the first argument is searched for in the second. Both argument should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). `substructureSearch` evaluates to a boolean value.
 
 ```JSON
 { "substructureSearch": ["c1ccccc1", { "column": ["compound"] }]}
@@ -164,16 +164,10 @@ There are a few additional capabilities that fall outside the range of the usual
 
 ## Casts
 
-The final element of the EdelweissData™ Query Language are casts. Because the query language uses a simple type system, EdelweissData is usually able to infer all necessary casts and it is rarely necessary for a user to explicity specify these. There are some edge cases where it can be necessary though which is why they are available as query expressions. Two types of cast exist - strict casts which make the query fail if a cast is specified between incompatible types, and lenient casts which result in a `null` value if a cast is impossible.
-
-`cast` or `strictCast` attempts to cast from one datatype to another, failing if the cast is impossible. The possible datatypes are [listed here](create-publish.md#upload-the-schema). The first subexpression is the expression to cast, the second string argument is the datatype identifier of the type to cast to.
+The final element of the EdelweissData™ Query Language are casts, which convert data from one datatype to another. Because the query language uses a simple type system, EdelweissData is able to infer if a cast is possible. If the cast is safe and cannot fail (for example converting an integer to a string), it will be inserted automatically. If the cast is possible, but not necessarily safe (for example converting a string to an integer may fail, or converting a float to an integer will lose data), the user has to insert it explicitly using the `cast` function. Its first argument is the expression to cast and the second one is the datatype identifier of the type to cast to.
 
 ```JSON
-{ "cast": [["test"], "xsd:string"]}
+{ "cast": [{ "column": ["molecular_weight"] }, "xsd:integer"]}
 ```
 
-`lenientCast` attempts to cast from one datatype to another, returning null if the cast is not possible. The possible datatypes are [listed here](create-publish.md#upload-the-schema). The first subexpression is the expression to cast, the second string argument is the datatype identifier of the type to cast to.
-
-```JSON
-{ "lenientCast": [["test"], "xsd:string"]}
-```
+The possible datatypes are [listed here](create-publish.md#upload-the-schema).
