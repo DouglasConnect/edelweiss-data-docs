@@ -30,3 +30,5 @@ Edelweiss Data servers provide a rich **User Interface** as well that let's you 
 
 - [Authentication](walkthroughs/authentication.md)
 - [Creating and Publishing a Dataset](walkthroughs/create-publish.md)
+- [Details about the Query Language for filtering and ordering](walkthroughts/query.md)
+- [Using metadata effectively](walkthroughts/metadata.md)
