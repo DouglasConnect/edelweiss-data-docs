@@ -1,20 +1,18 @@
 import {log, logError, ensureSuccessful} from './utils.js'
 
-let baseUrl = "https://api.edelweissdata.com/datasets"
-
-export async function createDataset(token){
+export async function createDataset(config){
     try {
         const data = { name: 'my-dataset' };
         let fetchOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${token}`
+                'Authorization': `Bearer ${config.accessToken}`
             },
             body: JSON.stringify(data),
         };
 
-        let response = await fetch(`${baseUrl}/create`, fetchOptions);
+        let response = await fetch(`${config.edelweissUrl}/datasets/create`, fetchOptions);
         await ensureSuccessful(response);
 
         let dataset = await response.json();
@@ -27,7 +25,7 @@ export async function createDataset(token){
     }
 }
 
-export async function uploadData(token, datasetId){
+export async function uploadData(config, datasetId){
     try
     {
         let lines = [
@@ -43,12 +41,12 @@ export async function uploadData(token, datasetId){
         let fetchOptions = {
             method: 'POST',
             headers: {
-                'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+                'Authorization': `Bearer ${config.accessToken}`,
             },
             body: formData,
         }
 
-        let response = await fetch(`${baseUrl}/${datasetId}/in-progress/data/upload`, fetchOptions)
+        let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}/in-progress/data/upload`, fetchOptions)
         await ensureSuccessful(response)
         let result = await response.json()
         log("UploadData: Data was uploaded Succesfully");
@@ -60,17 +58,17 @@ export async function uploadData(token, datasetId){
     }
 }
 
-export async function inferSchema(token, datasetId){
+export async function inferSchema(config, datasetId){
     try
     {
         let fetchOptions = {
             method: 'POST',
             headers: {
-                'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+                'Authorization': `Bearer ${config.accessToken}`,
             }
         }
 
-        let response = await fetch(`${baseUrl}/${datasetId}/in-progress/schema/infer`, fetchOptions)
+        let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}/in-progress/schema/infer`, fetchOptions)
         await ensureSuccessful(response)
         let result = await response.json()
         log("InferSchema: Schema was inferred Succesfully");
@@ -83,7 +81,7 @@ export async function inferSchema(token, datasetId){
 }
 
 
-export async function uploadMetadata(token, datasetId) {
+export async function uploadMetadata(config, datasetId) {
     try {
 
         let description = `
@@ -109,12 +107,12 @@ export async function uploadMetadata(token, datasetId) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${token}`
+                'Authorization': `Bearer ${config.accessToken}`
             },
             body: JSON.stringify(datasetInfo),
         }
 
-        let response = await fetch(`${baseUrl}/${datasetId}/in-progress`, fetchOptions);
+        let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}/in-progress`, fetchOptions);
         await ensureSuccessful(response)
         let data = await response.json();
         log("UploadMetadata: Metadata and Description was uploaded successful")
@@ -125,7 +123,7 @@ export async function uploadMetadata(token, datasetId) {
     }
 }
 
-export async function publishDataset(token, datasetId){
+export async function publishDataset(config, datasetId){
     try
     {
         const data = { changelog: 'Initial Version' };
@@ -133,12 +131,12 @@ export async function publishDataset(token, datasetId){
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+                'Authorization': `Bearer ${config.accessToken}`,
             },
             body: JSON.stringify(data)
         }
 
-        let response = await fetch(`${baseUrl}/${datasetId}/in-progress/publish`, fetchOptions)
+        let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}/in-progress/publish`, fetchOptions)
         await ensureSuccessful(response)
         let result = await response.json()
         log("PublishDataset: Data was published Succesfully");
@@ -150,7 +148,7 @@ export async function publishDataset(token, datasetId){
     }
 }
 
-export async function queryDataset(token, datasetId){
+export async function queryDataset(config, datasetId){
     try
     {
         let version = 1;
@@ -163,11 +161,11 @@ export async function queryDataset(token, datasetId){
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+                'Authorization': `Bearer ${config.accessToken}`,
             },
         }
 
-        let response = await fetch(`${baseUrl}/${datasetId}/versions/${version}/data?query=${queryString}`, fetchOptions)
+        let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}/versions/${version}/data?query=${queryString}`, fetchOptions)
         await ensureSuccessful(response)
         let result = await response.json()
         log("QueryDataset: Dataset Query was successful");
@@ -179,7 +177,7 @@ export async function queryDataset(token, datasetId){
     }
 }
 
-export async function deleteDataset(token, datasetId){
+export async function deleteDataset(config, datasetId){
     try
     {
         const data = { changelog: 'Initial Version' };
@@ -187,14 +185,14 @@ export async function deleteDataset(token, datasetId){
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${token}`,  //Replace then XXX with your API token
+                'Authorization': `Bearer ${config.accessToken}`,
             },
             body: JSON.stringify(data)
         }
 
-        let response = await fetch(`${baseUrl}/${datasetId}`, fetchOptions)
+        let response = await fetch(`${config.edelweissUrl}/datasets/${datasetId}`, fetchOptions)
         await ensureSuccessful(response)
-        log("DeleteDataset: Data was published Succesfully");
+        log("DeleteDataset: Data was deleted Succesfully");
     }
     catch(error)
     {
