@@ -1,11 +1,14 @@
 # Edelweiss Data
 Convenient publishing of scientific data with proper versioning, rich metadata support and a powerful API
 
-![Edelweiss Data](https://edelweissdata.com/images/data-explorer.png)
+[![Edelweiss Data](https://edelweissdata.com/images/data-explorer.png)](https://www.edelweissdata.com)
 
-## Table of Contents
-- [Overview](#Overview)
-- [Getting Started](#Getting-Started)
+## Getting Started
+
+- [Authentication](walkthroughs/authentication.md)
+- [Creating and Publishing a Dataset](walkthroughs/create-publish.md)
+- [Details about the Query Language for filtering and ordering](walkthroughts/query.md)
+- [Using metadata effectively](walkthroughts/metadata.md)
 
 ## Overview
 The core concept of Edelweiss Data is that of a **Dataset**. A Dataset is a single table of data (usually originating from a csv file) and carries the following additional pieces of information:
@@ -25,10 +28,3 @@ Just like the tabular data of one particular dataset can be retrieved as a **Pan
 When you are searching for Datasets, a lot of the interesting information that you may want to filter by is hidden in the **metadata** (e.g. maybe most of your datasets have a metadata field "Species" at the top level of the metadata json that indicates from what kind of animal cells the data in this dataset originate from). To make such filtering easy, our Datasets query function take an optional list of "column mappings" that allow you to specify a **JsonPath expression** to extract a field from the metadata and include it with a given name in the resulting DataFrame. In the Species example, you could pass the list of column mappings [("Species from Metadata", "$.Species")] and the resulting DataFrame would contain an additional column "Species from Metadata" and for every row the result of evaluating the JsonPath $.Species would be included in this column and you could filter on it using conditions to e.g. only retrieve Datasets where the Species is set to "Mouse".
 
 Edelweiss Data servers provide a rich **User Interface** as well that let's you visually browse and filter datasets and the data (and associated information) of each dataset. This UI is built to integrate nicely with the python client. The DataExplorer that is used to explore a dataset has a button in the upper right corner to generate the python code to get the exact same filtering and ordering you see in the UI into a Pandas DataFrame using the Edelweiss Data library for your convenience.
-
-## Getting Started
-
-- [Authentication](walkthroughs/authentication.md)
-- [Creating and Publishing a Dataset](walkthroughs/create-publish.md)
-- [Details about the Query Language for filtering and ordering](walkthroughts/query.md)
-- [Using metadata effectively](walkthroughts/metadata.md)
