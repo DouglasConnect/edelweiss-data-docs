@@ -9,7 +9,7 @@ Metadata in EdelweissData™ is stored for each dataset and comes in four forms:
 3. the description field for each column in the schema
 4. some automatically collected system metadata like the timestamp the version of the dataset was published at
 
-Of these, the first is maybe the most unusual so this walkthrough will focus on how the metadata field can be used. First though, let's take a quick look at the description fields.
+Of these, the first is maybe the most unusual so this walkthrough will focus primarily on how the metadata field can be used. First though, let's take a quick look at the description fields.
 
 ## The dataset description field
 
@@ -51,7 +51,7 @@ Because in such scenarios it is very common to filter datasets based on certain 
     {
       "name": "molecularWeight",
       "jsonPath": "$.molecularWeight",
-      "dataType": "xsd:integer"
+      "dataType": "xsd:double"
     }
   ],
   "condition": {
@@ -68,4 +68,49 @@ The result would be a json response that would look something like this when vie
 | Name | Created | Version | molecularWeight |
 | ...  | ...     | ...     | 144.211         |
 
-The "columns" section above creates a mapping using a [JSONPath query](https://goessner.net/articles/JsonPath/) that tries to map the value at the `molecularWeight` key at the root level into a new column (converting it to an integer), while the "condition" section filters to only those datasets where the value at this part of the metadata is above 0 and below 900.
+The "columns" section above creates a mapping using a [JSONPath query](https://goessner.net/articles/JsonPath/) that tries to map the value at the `molecularWeight` key at the root level into a new column (converting it to a double), while the "condition" section filters to only those datasets where the value at this part of the metadata is above 0 and below 900.
+
+## A real world example
+
+The above examples don't exist as public datasets on edelweissdata.com but they hopefully make it very clear how metadata could be used. To have a look at where and how to use metadata that is actually used in some datasets published as public datasets on EdelweissData™, here is a concrete example of the metadata published in the example "COVID-19 complete dataset by Our World In Data" dataset:
+
+
+
+Which fields you use in the metadata of your own datasets is entirely up to you but the more similar metadata is the more useful it becomes, so it makes sense to look at what other datasets have used and try to follow their lead unless you have a good reason to deviate.
+
+The "category" field e.g. can be very useful to group datasets. As described above, the `/datasets` endpoint accepts in it's query a columns parameter that can use a JSONPath query to try to extract a part of the metadata from every dataset and return the result in a new column. If we want to retrieve only the datasets that have, in their metadata, a field called "category" with the value "covid-19" we have to do two things: add a column mapping in the /datasets query and filter on the value of this new column.
+
+JSONPath queries use the $ to indicate the root context, then you can "dot into" keys if they don't have whitespace (if they do you can use ["category"] or similar instead):
+
+```
+jsonPath = "$.category"
+```
+
+This is the column mapping - an array of mappings, each being an object with a name (the key in the columns object that the result of the query will be returned to you), a JSONPath that tries to select something in the metadata, and the dataType that you want the value to be converted into if possible.
+
+```javascript
+columns = [
+  { name: "Category",
+    jsonPath: jsonPath,
+    dataType: "xsd:string"
+  }
+]
+```
+
+EdelweissData doesn't know if the JSONPath query will return single values (like with category above that would return a single string value in this case) or a JSON array value. To unify this, **the return value is always an array** of whatever dataType you gave in the above mapping. This means that you can mostly use \`contains\` to query for the content of such queries
+
+```javascript
+query = {
+  contains: [{column: ["Category"]}, "covid-19"]
+}
+```
+
+Here we run the actual query and get all datasets that match the condition above:
+
+```javascript
+const encodedQuery = JSON.stringify({condition: query, columns: columns})
+let url = new URL(`${edelweissUrl}/datasets`)
+url.searchParams.append('query', encodedQuery);
+fetch(url)
+    .then(response => response.json())
+```

@@ -1,18 +1,20 @@
 # Create and Publish a Dataset
 
-In order to create a Dataset, you first need to Create an In Progress Dataset. In this stage you can make as many changes to the dataset as you want.
+This walkthrough shows you how to create a new dataset from a csv file, including setting description and metadata and publishing the dataset. In later walkthroughs you will learn more about the details of the authentication scheme, the query language etc..
 
-Once you are okay with the Data in the Dataset and want to make the Dataset Available to others, you can simply Publish the Dataset.
+In order to create a dataset, you first need to create an In-Progress Dataset. In this stage you can make as many changes to the dataset as you want.
 
-A published dataset is versioned and as such cannot be modified. In order to modify a published Dataset you will need to publish a new version by creating another In Progress Dataset, apply the new changes you'd like to make and then publish a new version.
+Once you are okay with the data in the dataset and want to make the dataset available to others, you can publish it, thus creating a new version.
 
-Keep in mind that the old version is still available
+A published dataset is versioned and as such cannot be modified. In order to modify a published dataset you will need to publish a new version by creating another In-Progress Dataset, apply the new changes you'd like to make and then publish a new version.
+
+Keep in mind that the old version will still be available. When accessing datasets, you can specify in the URL if you want to retrieve the dataset at a specific version (identified by the integer version number starting at 1) or whatever is the latest published version.
 
 **Dataset Lifecycle Flow**
 
 ![Dataset LifeCycle](images/dataset-lifecycle.png)
 
-For detailed information about Edelweiss API you can visit the [Swagger Docs](https://api.edelweissdata.com/docs/index.html)
+For detailed information about specific endpoints of the Edelweiss API you can visit the [Swagger Docs](https://api.edelweissdata.com/docs/index.html)
 
 ## Getting Started
 To Create a Dataset you will need to first [Create a Authentication Token](authentication.md)
@@ -24,10 +26,8 @@ The steps to publish a new Dataset are as follows
 3. Upload the Schema
 4. Upload Metadata and Description
 5. Publish the Dataset
-6. Query the Dataset
-7. Delete a Dataset
 
-For the rest of this walkthrough we will need to declare a few global contants
+For the rest of this walkthrough we will need to declare a few global constants
 
 ```js
 let baseUrl = "https://api.edelweissdata.com"  // Points to the specific Edelweiss API url
@@ -39,13 +39,13 @@ So with that out of the way..
 
 ### Create a Dataset
 
-We start by creating a dataset. By default when a dataset is created it is in the InProgress State. In this state you can make modifications and updates but at the moment, the Dataset is empty
+Now we are ready to perform the call to the [/datasets/create](https://api.edelweissdata.com/docs/index.html#operations-Create-createInProgressDataset) endpoint. We have to supply an object with the name of the new dataset and make sure to set the authorization header is filled correctly
 
 **Code**:
 ```js
 const data = { name: 'my-dataset' };
 
-let fetchOptions = {
+const fetchOptions = {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -54,12 +54,13 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/datasets/create`, fetchOptions)
+const dataset = await fetch(`${baseUrl}/datasets/create`, fetchOptions)
     .then(response => response.json())
-    .then(data => console.log('Success:', data); datasetid = data.id;)
     .catch((error) => {
         console.error('Error:', error);
     });
+const datasetId = dataset.id
+console.log(dataset);
 ```
 
 **Response:**
@@ -80,7 +81,7 @@ fetch(`${baseUrl}/datasets/create`, fetchOptions)
 
 ### Upload data to a Dataset
 
-Now that we have a dataset created, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data`. The API expects the file to be passed as the `data` parameter
+Now that we have a dataset created, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data` with a POST request to the [/datasets/{datasetid}/in-progress/data/upload](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-uploadDataToInProgressDataset) endpoint. The API expects the file to be passed as the `data` parameter
 
 **Code:**
 
@@ -151,9 +152,9 @@ There are currently two ways to define the Schema
 
 #### Schema Inference
 
-Edelweiss Data can infer the schema based on some heuristics.
+Edelweiss Data can infer the schema based on some heuristics. Schema inference can only infer basic information like the data type. If you use schema inference, consider augmenting the returned schema (e.g. with richer descriptions for each column if you have them) and uploading it again (see the Schema Upload section below for details)
 
-To do this, we simply call the `Infer Schema` endpoint as follows
+To do this, we simply call the [/datasets/{datasetId}/in-progress/schema/infer](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-inferSchemaOfInProgressDataset) endpoint as follows
 
 **Code:**
 
@@ -204,11 +205,9 @@ fetch(`${baseUrl}/datasets/${datasetid}/in-progress/schema/infer`, fetchOptions)
 }
 ```
 
-Schema inference can only infer basic information like the data type. If you use schema inference, consider augmenting the returned schema (e.g. with richer descriptions for each column if you have them) and uploading it again (see the Schema Upload section below for details)
-
 #### Schema Upload
 
-The schema inference works very well for basic data types, however there are situations where you want fine grained control over the schema. To accomplish this we simply need to call the `UpdateDataset` endpoint
+The schema inference works very well for basic data types, however there are situations where you want fine grained control over the schema. To accomplish this you need to [construct a new json schema from scratch](https://api.edelweissdata.com/docs/index.html#model-Schema) or modify one returned by schema inference and then upload it by POSTing it to the [/datasets/{datasetId}/in-progress](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-updateInProgressDataset) endpoint
 
 **Code:**
 ```js
@@ -218,12 +217,12 @@ let data = {
         [
             {
                 "name": "FirstName",
-                "dataType": "xsd:string"
+                "dataType": "xsd:string",
                 "description": "First Name"
             },
             {
                 "name": "LastName",
-                "dataType": "xsd:string"
+                "dataType": "xsd:string",
                 "description": "Last Name"
             }
         ]
@@ -239,7 +238,7 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/datasets/${datasetId}/in-progress`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetid}/in-progress`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -284,6 +283,8 @@ We have successfully inferred the schema; at this point we can move on to publis
 1. Description - Markdown textual description to help users understand what the data is about
 2. Metadata - A Json object that contains pieces of structured metadata that is useful to allow other people to find the dataset. To learn more about how metadata can be used effectively, have a look at the [metadata documentation](metadata.md)
 
+Both items (as well as the name and the schema if you want) can be uploaded in one POST request to the [/datasets/{datasetId}/in-progress](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-updateInProgressDataset) endpoint
+
 **Code:**
 ```js
 
@@ -314,7 +315,7 @@ let fetchOptions = {
     body: JSON.stringify(datasetInfo),
 }
 
-fetch(`${baseUrl}/datasets/${datasetId}/in-progress`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetid}/in-progress`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -353,13 +354,40 @@ fetch(`${baseUrl}/datasets/${datasetId}/in-progress`, fetchOptions)
 }
 ```
 
+## Set the dataset visibility
+
+As a final step before publishing we have to decide if the dataset should be publicly visible (i.e. even anonymous HTTP request can retrieve the dataset) or access restricted (in which case you can control which users can access the dataset and/or create new versions)
+
+The current visibility can be queried with a GET request to /datasets/{datasetId}/in-progress - the current visibility is then in the \`isPublic\` field. By default the visibility of a new dataset is set to **public**.
+
+You can set the visibility to either public or access restricted by POSTing to the [/datasets/{datasetId}/permissions/visibility](https://api.edelweissdata.com/docs/index.html#operations-Security-changeDatasetVisibility):
+
+```javascript
+const data = ({
+    isPublic: false
+  })
+
+// upload data
+const fetchOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${token}`
+    },
+    body: JSON.stringify(data)
+};
+
+fetch(`${baseUrl}/datasets/${datasetid}/permissions/visibility`,fetchOptions)
+    .then(response => response.ok);
+```
+
 ### Publish the Dataset
 
 Now that we have a schema for the dataset and added metadata and a description we can publish our dataset. In the publishing step Edelweiss Data will validate the schema and also pre-compute some information about our data.
 
 Publishing a Dataset creates a new version of that Dataset. Once published, a version cannot be changed. If you want to update the dataset you can create a new version. The old version will still be available though. In the URL scheme of EdelweissData™ all endpoints that reference published datasets specify either a specific version by number (starting at 1), or the special version string `latest` to indicate that we want to retrieve whatever is the newest version of this dataset.
 
-To document the reason behind publishing new version we need to provide a helpful changelog message when we publish a new version:
+To document the reason behind publishing new version we need to provide a helpful changelog message when we publish a new version. Publishing is achieved by POSTing to the [/datasets/{datasetId}/in-progress/publish](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-publishInProgressDataset) endpoint.
 
 **Code:**
 ```js
@@ -374,7 +402,7 @@ let fetchOptions = {
     body: JSON.stringify(data),
 }
 
-fetch(`${baseUrl}/datasets/${datasetId}/in-progress/publish`, fetchOptions)
+fetch(`${baseUrl}/datasets/${datasetid}/in-progress/publish`, fetchOptions)
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch((error) => {
@@ -416,106 +444,3 @@ fetch(`${baseUrl}/datasets/${datasetId}/in-progress/publish`, fetchOptions)
    "isPublic": true
 }
 ```
-
-
-### Query the Dataset
-
-When we want to query the Dataset, we use need to supply the datasetId and version number. In the event that you don't want to specify the version you can use the `latest` moniker
-
-When querying the data you can also leverage a powerful query language that allows you to filter and order the data.
-
-For example the query in the snippet, filters the data where the column `State` contains the word `baden`
-
-```js
-let query = {
-   "columns":[
-
-   ],
-   "condition":{
-      "and":[
-         {
-            "fuzzySearch":[
-               {
-                  "column":[
-                     "State"
-                  ]
-               },
-               "baden"
-            ]
-         }
-      ]
-   },
-   "offset":0,
-   "limit":100,
-   "orderBy":[
-
-   ]
-}
-```
-See [Query Language](query.md) for more details about the query language.
-
-
-**Code:**
-```js
-let version = "1"
-
-let queryString = JSON.stringify(query)
-
-let fetchOptions = {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
-    },
-    body: JSON.stringify(data),
-}
-
-fetch(`${baseUrl}/datasets/${datasetId}/versions/${version}/data?query=${queryString}`, fetchOptions)
-    .then(response => response.json())
-    .then(data => console.log('Success:', data))
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-```
-
-**Response:**
-```json
-{
-    "total": 0,
-    "offset": 0,
-    "limit": 0,
-    "results": [
-        {
-            "id": 0,
-            "data": {
-                "Column1": "data",
-                "Column2": "data"
-            }
-        }
-    ],
-    "aggregations": {}
-}
-```
-
-
-### Delete a Dataset
-To delete a dataset simply send a delete request. Keep in mind that this deletes the dataset and all versions of the dataset
-
-```js
-let fetchOptions = {
-    method: 'DELETE',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
-    }
-}
-
-fetch(`${baseUrl}/datasets/${datasetId}`, fetchOptions)
-    .then(response => response.json())
-    .then(data => console.log('Success:', data))
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-```
-
-Delete dataset just produces a 204 status code with no content
