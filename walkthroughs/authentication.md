@@ -13,7 +13,7 @@ This is the primary way of authenticating to the EdelweissData API.
 Access tokens tell the API who are you, and that you have the permissions to access your datasets.
 Access tokens expires after a 24 hours, after which you will need to generate a new one.
 
-Access tokens are supplied to the API in the HTTP headers of your request.  For example, sending a bearer token with fetch request to list datasets:
+Access tokens are supplied to the API in the HTTP headers of your request. As an example, here we retrieve datasets using a GET request to the /datasets endpoint. If we perform this request without the authorization header we would get only publicly visible datasets. If we include the authorization header like below we retrieve a list of all datasets the user with this token is allowed to see (both public and private to the user)
 
 ```js
 let edelweissUrl = "https://api.edelweissdata.com"
@@ -34,14 +34,16 @@ There are typically two ways to generate an access token, They are:
 
 To get your access token you simply take the following steps:
 
-- Navigate to [My Datasets](https://edelweissdata.com/datasets/manage) Page.  You will be asked to sign in if you have not done so already.
+- Navigate to the [My Datasets](https://edelweissdata.com/datasets/manage) page.  You will be asked to sign in if you have not done so already.
 - Click the "Get API Key" button
 - Click the "Copy Key" button
 
 
 ### Generate an access token using the Edelweiss Data CLI.
 
-The cli tool is published as a [package in npmjs](https://www.npmjs.com/package/edelweiss-data-cli). You can install the cli globally:
+We maintain two cli tools. One written in Javascript and published as a [package in npmjs](https://www.npmjs.com/package/edelweiss-data-cli), the other written in python and published as [a PyPi package](https://pypi.org/project/edelweiss-data-cli/). Since the examples here all use Javascript we will use the npmjs version here but if you have python set up locally you may prefer the Python based version that works similarly.
+
+You can install the cli globally:
 
 ```bash
 # Install with yarn
@@ -141,7 +143,7 @@ formData.append('grant_type', 'refresh_token');
 formData.append('client_id', nativeClientId);
 formData.append('refresh_token', refreshToken);
 
-let  fetchOptions = {
+let fetchOptions = {
     method:  'POST',
     headers: {
         'Content-Type':  'application/x-www-form-urlencoded'
@@ -149,7 +151,7 @@ let  fetchOptions = {
     body:  formData
 }
 
-fetch(`${domain}/oauth/token`, fetchOptions)
+fetch(`https://${domain}/oauth/token`, fetchOptions)
     .then(response  =>  response.json())
     .then(data  =>  console.log('Success:', data))
     .catch((error) => {

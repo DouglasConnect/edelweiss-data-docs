@@ -153,7 +153,7 @@ There are a few additional capabilities that fall outside the range of the usual
 
 ```JSON
 // E.g. to be used as an order by expression:
-{ "tanimotoSimilarity": [{ "column": ["compound"] }, "c1ccccc1"] }
+{ "tanimotoSimilarity": ["c1ccccc1", { "column": ["compound"] }] }
 ```
 
 `substructureSearch` let's you find chemical substructures where the first argument is searched for in the second. Both argument should evaluate to a SMILES chemical structure (either string values that will be converted implicitly or a column with datatype SMILES). `substructureSearch` evaluates to a boolean value.
