@@ -1,5 +1,7 @@
 # Retrieving data
 
+An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-retrieving-data?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+
 This walkthrough shows how to retrieve a dataset and its data from EdelweissData. One of EdelweissData's principles is that for most interactions there should be a nice graphical user interface as well as a well designed REST like API. For this notebook, we will look at the API requests equivalent to browsing a single dataset in the EdelweissData DataExplorer. We'll retrieve information about the "[COVID-19 timeseries data for Germany by state (RKI data)](https://edelweissdata.com/dataset/8dde2785-8a2a-4847-80b8-982a691954d6:106)" dataset - if you follow the link you can explore it interactively in the DataExplorer to get an idea about the data.
 
 In this walkthrough we'll concentrate on public datasets that can be accessed without authorization. If you want to access private datasets, refer to the [authentication notebook](/docs-authentication) for details.
@@ -28,6 +30,176 @@ fetch(`${edelweissdataUrl}/datasets/${datasetId}/versions/${version}`)
      .then(response => response.json())
 ```
 
+Response (truncated in parts for brevity):
+```json
+{
+  "id": {
+    "id": "8dde2785-8a2a-4847-80b8-982a691954d6",
+    "version": 106
+  },
+  "name": "COVID-19 timeseries data for Germany by state (RKI data)",
+  "schema": {
+    "columns": [
+      {
+        "name": "State",
+        "description": "",
+        "dataType": "xsd:string",
+        "arrayValueSeparator": null,
+        "missingValueIdentifiers": [],
+        "indices": [
+          "terms-aggregation"
+        ],
+        "visible": true,
+        "rdfPredicate": null,
+        "statistics": {
+          "mean": null,
+          "standardDeviation": null,
+          "min": null,
+          "max": null,
+          "terms": [
+            {
+              "docCount": 132,
+              "termName": "Mecklenburg-Vorpommern"
+            }
+            //, ...
+          ]
+        }
+      },
+      {
+        "name": "Date",
+        "description": "",
+        "dataType": "xsd:string",
+        "arrayValueSeparator": null,
+        "missingValueIdentifiers": [],
+        "indices": [],
+        "visible": true,
+        "rdfPredicate": null,
+        "statistics": {
+          "mean": null,
+          "standardDeviation": null,
+          "min": null,
+          "max": null,
+          "terms": null
+        }
+      },
+      {
+        "name": "Cases",
+        "description": "",
+        "dataType": "xsd:integer",
+        "arrayValueSeparator": null,
+        "missingValueIdentifiers": [],
+        "indices": [],
+        "visible": true,
+        "rdfPredicate": null,
+        "statistics": {
+          "mean": 87.17551622418878,
+          "standardDeviation": 193.172798954723,
+          "min": 1,
+          "max": 1986,
+          "terms": null
+        }
+      },
+      {
+        "name": "Deaths",
+        "description": "",
+        "dataType": "xsd:integer",
+        "arrayValueSeparator": null,
+        "missingValueIdentifiers": [],
+        "indices": [],
+        "visible": true,
+        "rdfPredicate": null,
+        "statistics": {
+          "mean": 3.420722713864307,
+          "standardDeviation": 11.006584168256104,
+          "min": 0,
+          "max": 131,
+          "terms": null
+        }
+      },
+      {
+        "name": "TotalCases",
+        "description": "",
+        "dataType": "xsd:integer",
+        "arrayValueSeparator": null,
+        "missingValueIdentifiers": [],
+        "indices": [],
+        "visible": true,
+        "rdfPredicate": null,
+        "statistics": {
+          "mean": 10028.100294985252,
+          "standardDeviation": 14101.49014397,
+          "min": 1,
+          "max": 57560,
+          "terms": null
+        }
+      },
+      {
+        "name": "TotalDeaths",
+        "description": "",
+        "dataType": "xsd:integer",
+        "arrayValueSeparator": null,
+        "missingValueIdentifiers": [],
+        "indices": [],
+        "visible": true,
+        "rdfPredicate": null,
+        "statistics": {
+          "mean": 463.3517699115044,
+          "standardDeviation": 693.937711433364,
+          "min": 0,
+          "max": 2635,
+          "terms": null
+        }
+      }
+    ]
+  },
+  "rowcount": 13,
+  "created": "2020-08-26T09:35:55.9000930+00:00",
+  "description": "# COVID-19 data for Germany ...",
+  "metadata": {
+    "category": "covid-19",
+    "columnNames": {
+      "daily-cases": "Cases",
+      "daily-deaths": "Deaths",
+      "date": "Date",
+      "region": "State",
+      "total-cases": "TotalCases",
+      "total-deaths": "TotalDeaths"
+    },
+    "dataBackgroundInformation": "https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0",
+    "datetimeRetrieved": "2020-08-26 09:35:47.668202+00:00",
+    "estimatedReportingCutoff": "2020-08-25 22:00:00+00:00",
+    "keywords": [
+      "covid-19",
+      "cases",
+      "deaths",
+      "Germany"
+    ],
+    "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "originalDataCollectionAgency": "https://www.rki.de",
+    "regions": [
+      "Baden-Württemberg",
+      "Bayern",
+      "Berlin",
+      "Brandenburg",
+      "Bremen",
+      "Hamburg",
+      "Hessen",
+      "Mecklenburg-Vorpommern",
+      "Niedersachsen",
+      "Nordrhein-Westfalen",
+      "Rheinland-Pfalz",
+      "Saarland",
+      "Sachsen",
+      "Sachsen-Anhalt",
+      "Schleswig-Holstein",
+      "Thüringen"
+    ],
+    "upstreamSource": "https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv"
+  },
+  "isPublic": true
+}
+```
+
 ## Retrieving the data
 
 For the tabular data component of the dataset there are a few more options since this can result in a lot of data potentially being transmitted.
@@ -45,7 +217,41 @@ fetch(`${edelweissdataUrl}/datasets/${datasetId}/versions/${version}/data`)
     .then(response => response.json())
 ```
 
-The data retrieval endpoint accepts a [DataQuery JSON object](https://api.edelweissdata.com/docs/index.html#model-DataQuery) that allows you to order the data differently, filter the rows or return only selected columns (for details about the Query Language refer to the [Query Language walkthrough](/@danyx/edelweissdata-docs-query-language)).
+Example Response (only 2 example rows):
+```json
+{
+  "total": 174,
+  "offset": 0,
+  "limit": 10,
+  "results": [
+    {
+      "id": 398,
+      "data": {
+        "Date": "2020/03/26 00:00:00",
+        "Cases": 286,
+        "State": "Berlin",
+        "Deaths": 4,
+        "TotalCases": 2032,
+        "TotalDeaths": 23
+      }
+    },
+    {
+      "id": 397,
+      "data": {
+        "Date": "2020/03/25 00:00:00",
+        "Cases": 245,
+        "State": "Berlin",
+        "Deaths": 2,
+        "TotalCases": 1746,
+        "TotalDeaths": 19
+      }
+    },
+    // ...
+  ]
+}
+```
+
+The data retrieval endpoint accepts a [DataQuery JSON object](https://api.edelweissdata.com/docs/index.html#model-DataQuery) that allows you to order the data differently, filter the rows or return only selected columns (for details about the Query Language refer to the [Query Language walkthrough](query)).
 
 Here is an example that filters to only the rows where the State column is "Berlin", orders by the number of new cases descending and returns only the first 10 rows:
 
@@ -66,15 +272,31 @@ fetch(`${edelweissdataUrl}/datasets/${datasetId}/versions/${version}/data`,optio
 
 ### Data retrieval as CSV
 
-The data retrieval endpoint can return the data not just as JSON as shown above but also as CSV, which can be easier to work with in some workflow tools etc. To retrieve the data as CSV you can either use content-negotiation (i.e. set the `Content-Type` header to `text/csv`) or include a query parameter "`mimetype=text/csv`. The former is preferred but the latter is sometimes convenient when a workflow tool does not let you set request headers. Note that in the CSV case you only get the data back, not the additional information you get with JSON on the top level.
+The data retrieval endpoint can return the data not just as JSON as shown above but also as CSV, which can be easier to work with in some workflow tools etc. To retrieve the data as CSV you can either use content-negotiation (i.e. set the `Accept` header to `text/csv`) or include a query parameter "`mimetype=text/csv`. The former is preferred but the latter is sometimes convenient when a workflow tool does not let you set request headers. Note that in the CSV case you only get the data back, not the additional information you get with JSON on the top level.
 
 Here is the request for performing the above filtered query but requesting the data as CSV.
 
 ```javascript
 const options = {
+    headers: { Accept: "text/csv" }
     method: 'POST',
     body: JSON.stringify(dataQuery)
   };
-fetch(`${edelweissdataUrl}/datasets/${datasetId}/versions/${version}/data?mimetype=text/csv`,options)
+fetch(`${edelweissdataUrl}/datasets/${datasetId}/versions/${version}/data`,options)
     .then(response => response.text());
+```
+
+Response
+```text
+State,Date,Cases,Deaths,TotalCases,TotalDeaths
+Berlin,2020/03/26 00:00:00,286,4,2032,23
+Berlin,2020/03/25 00:00:00,245,2,1746,19
+Berlin,2020/04/03 00:00:00,239,17,3564,74
+Berlin,2020/04/02 00:00:00,237,7,3325,57
+Berlin,2020/03/31 00:00:00,213,3,2901,42
+Berlin,2020/03/27 00:00:00,205,5,2237,28
+Berlin,2020/04/07 00:00:00,202,15,4096,105
+Berlin,2020/03/24 00:00:00,199,5,1501,17
+Berlin,2020/03/28 00:00:00,197,3,2434,31
+Berlin,2020/04/01 00:00:00,187,8,3088,50
 ```
