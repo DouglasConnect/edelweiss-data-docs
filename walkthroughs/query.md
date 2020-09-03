@@ -1,5 +1,7 @@
 # Edelweiss Query Language
 
+An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-query-language?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+
 EdelweissData™ has a rich Query language that allows you to filter and sort both queries to find datasets as well as queries for the actual data of an individual dataset.
 
 To make it easy to get familiar with the Query Language this walkthrough is divided into two sections: an overview of the Query language and then an enumeration of the different types of expressions with examples.

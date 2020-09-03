@@ -1,5 +1,7 @@
 # Create and Publish a Dataset
 
+An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-create-and-publish-a-dataset?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+
 This walkthrough shows you how to create a new dataset from a csv file, including setting description and metadata and publishing the dataset. In later walkthroughs you will learn more about the details of the authentication scheme, the query language etc..
 
 In order to create a dataset, you first need to create an In-Progress Dataset. In this stage you can make as many changes to the dataset as you want.
@@ -17,7 +19,7 @@ Keep in mind that the old version will still be available. When accessing datase
 For detailed information about specific endpoints of the Edelweiss API you can visit the [Swagger Docs](https://api.edelweissdata.com/docs/index.html)
 
 ## Getting Started
-To Create a Dataset you will need to first [Create a Authentication Token](authentication.md)
+To Create a Dataset you will need to first [Create a Authentication Token](authentication)
 
 The steps to publish a new Dataset are as follows
 
@@ -25,7 +27,8 @@ The steps to publish a new Dataset are as follows
 2. Upload the Data
 3. Upload the Schema
 4. Upload Metadata and Description
-5. Publish the Dataset
+5. Set the visibility of the dataset
+6. Publish the Dataset
 
 For the rest of this walkthrough we will need to declare a few global constants
 
@@ -72,16 +75,14 @@ console.log(dataset);
    "schema":null,
    "created":"2020-07-18T23:14:03.9818053+00:00",
    "description":"",
-   "metadata":{
-
-   },
+   "metadata":{},
    "dataSource":null
 }
 ```
 
 ### Upload data to a Dataset
 
-Now that we have a dataset created, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data` with a POST request to the [/datasets/{datasetid}/in-progress/data/upload](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-uploadDataToInProgressDataset) endpoint. The API expects the file to be passed as the `data` parameter
+Now that we have created a dataset, we need to populate it with data. We need to read the csv and upload it as `multipart/form-data` with a POST request to the [/datasets/{datasetid}/in-progress/data/upload](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-uploadDataToInProgressDataset) endpoint. The API expects the file to be passed as the `data` parameter
 
 **Code:**
 
@@ -154,7 +155,7 @@ There are currently two ways to define the Schema
 
 Edelweiss Data can infer the schema based on some heuristics. Schema inference can only infer basic information like the data type. If you use schema inference, consider augmenting the returned schema (e.g. with richer descriptions for each column if you have them) and uploading it again (see the Schema Upload section below for details)
 
-To do this, we simply call the [/datasets/{datasetId}/in-progress/schema/infer](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-inferSchemaOfInProgressDataset) endpoint as follows
+To infer the schema, call the [/datasets/{datasetId}/in-progress/schema/infer](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-inferSchemaOfInProgressDataset) endpoint as follows
 
 **Code:**
 
@@ -281,7 +282,7 @@ fetch(`${baseUrl}/datasets/${datasetid}/in-progress`, fetchOptions)
 We have successfully inferred the schema; at this point we can move on to publish the dataset. To make our dataset more useful though, it is a good idea to to add a few additional pieces of information. They are:
 
 1. Description - Markdown textual description to help users understand what the data is about
-2. Metadata - A Json object that contains pieces of structured metadata that is useful to allow other people to find the dataset. To learn more about how metadata can be used effectively, have a look at the [metadata documentation](metadata.md)
+2. Metadata - A Json object that contains pieces of structured metadata that is useful to allow other people to find the dataset. To learn more about how metadata can be used effectively, have a look at the [metadata documentation](metadata)
 
 Both items (as well as the name and the schema if you want) can be uploaded in one POST request to the [/datasets/{datasetId}/in-progress](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-updateInProgressDataset) endpoint
 

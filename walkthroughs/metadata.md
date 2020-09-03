@@ -1,5 +1,7 @@
 # Metadata
 
+An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-metadata?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+
 Maybe the most interesting feature of EdelweissData™ is the metadata support. You may know the [FAIR Data](https://en.wikipedia.org/wiki/FAIR_data) initiative that is an effort to make scientific data Findable, Accessible, Interoperable and Reusable. EdelweissData™ itself takes care of the Accessible and Interoperable parts by defining APIs and using open standards for communication. But only good metadata provided by you as the author to EdelweissData™ can enable the Findable and Reusable parts of FAIR data.
 
 Metadata in EdelweissData™ is stored for each dataset and comes in four forms:
@@ -74,15 +76,46 @@ The "columns" section above creates a mapping using a [JSONPath query](https://g
 
 The above examples don't exist as public datasets on edelweissdata.com but they hopefully make it very clear how metadata could be used. To have a look at where and how to use metadata that is actually used in some datasets published as public datasets on EdelweissData™, here is a concrete example of the metadata published in the example "COVID-19 complete dataset by Our World In Data" dataset:
 
-
+```json
+{
+  "category": "covid-19",
+  "columnNames": {
+    "daily-cases": "new_cases",
+    "daily-deaths": "new_deaths",
+    "date": "date",
+    "population": "population",
+    "region": "location",
+    "total-cases": "total_cases",
+    "total-deaths": "total_deaths"
+  },
+  "dataBackgroundInformation": "https://ourworldindata.org/coronavirus-source-data",
+  "datetimeRetrieved": "2020-09-02 12:28:42.425319+00:00",
+  "estimatedReportingCutoff": "2020-09-01 08:00:00+00:00",
+  "keywords": [
+    "covid-19",
+    "cases",
+    "deaths",
+    "by country",
+    "testing"
+  ],
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "originalDataCollectionAgency": "https://www.ecdc.europa.eu/en/coronavirus",
+  "regions": [
+    "Aruba",
+    "Afghanistan",
+    // ...
+  ],
+  "upstreamSource": "https://covid.ourworldindata.org/data/owid-covid-data.csv"
+}
+```
 
 Which fields you use in the metadata of your own datasets is entirely up to you but the more similar metadata is the more useful it becomes, so it makes sense to look at what other datasets have used and try to follow their lead unless you have a good reason to deviate.
 
-The "category" field e.g. can be very useful to group datasets. As described above, the `/datasets` endpoint accepts in it's query a columns parameter that can use a JSONPath query to try to extract a part of the metadata from every dataset and return the result in a new column. If we want to retrieve only the datasets that have, in their metadata, a field called "category" with the value "covid-19" we have to do two things: add a column mapping in the /datasets query and filter on the value of this new column.
+The "category" field e.g. can be very useful to group datasets. As described above, the `/datasets` endpoint accepts in it's query a columns parameter that can use a [JSONPath](https://goessner.net/articles/JsonPath/) query to try to extract a part of the metadata from every dataset and return the result in a new column. If we want to retrieve only the datasets that have, in their metadata, a field called "category" with the value "covid-19" we have to do two things: add a column mapping in the /datasets query and filter on the value of this new column.
 
 JSONPath queries use the $ to indicate the root context, then you can "dot into" keys if they don't have whitespace (if they do you can use ["category"] or similar instead):
 
-```
+```javascript
 jsonPath = "$.category"
 ```
 

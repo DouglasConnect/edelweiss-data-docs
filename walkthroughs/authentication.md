@@ -1,5 +1,6 @@
-
 # API Authentication
+
+An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-authentication?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
 
 There are two types of Tokens for authenticating with EdelweissData API. They are
 
