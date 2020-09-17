@@ -1,9 +1,9 @@
-# Edelweiss Data
+# EdelweissData™
 Convenient publishing of scientific data with proper versioning, rich metadata support and a powerful API
 
-[![Edelweiss Data](https://edelweissdata.com/images/data-explorer.png)](https://www.edelweissdata.com)
+[![EdelweissData™ ](https://edelweissdata.com/images/data-explorer.png)](https://www.edelweissdata.com)
 
-This repository contains the text for the integrated documentation of EdelweissData as well as some example jupyter notebooks to get you started in the example-notebooks folder.
+This repository contains the text for the integrated documentation of EdelweissData™ as well as some example jupyter notebooks to get you started in the example-notebooks folder.
 
 ## Walkthroughs
 

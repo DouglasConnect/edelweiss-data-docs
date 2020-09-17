@@ -1,6 +1,10 @@
 # Metadata
 
-An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-metadata?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+<div class="message">
+  <div class="message-body">
+        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-metadata?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly.
+  </div>
+</div>
 
 Maybe the most interesting feature of EdelweissData™ is the metadata support. You may know the [FAIR Data](https://en.wikipedia.org/wiki/FAIR_data) initiative that is an effort to make scientific data Findable, Accessible, Interoperable and Reusable. EdelweissData™ itself takes care of the Accessible and Interoperable parts by defining APIs and using open standards for communication. But only good metadata provided by you as the author to EdelweissData™ can enable the Findable and Reusable parts of FAIR data.
 
@@ -130,7 +134,7 @@ columns = [
 ]
 ```
 
-EdelweissData doesn't know if the JSONPath query will return single values (like with category above that would return a single string value in this case) or a JSON array value. To unify this, **the return value is always an array** of whatever dataType you gave in the above mapping. This means that you can mostly use \`contains\` to query for the content of such queries
+EdelweissData™ doesn't know if the JSONPath query will return single values (like with category above that would return a single string value in this case) or a JSON array value. To unify this, **the return value is always an array** of whatever dataType you gave in the above mapping. This means that you can mostly use \`contains\` to query for the content of such queries
 
 ```javascript
 query = {

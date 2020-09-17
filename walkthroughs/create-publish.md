@@ -1,6 +1,10 @@
 # Create and Publish a Dataset
 
-An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-create-and-publish-a-dataset?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+<div class="message">
+  <div class="message-body">
+        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-create-and-publish-a-dataset?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly.
+  </div>
+</div>
 
 This walkthrough shows you how to create a new dataset from a csv file, including setting description and metadata and publishing the dataset. In later walkthroughs you will learn more about the details of the authentication scheme, the query language etc..
 
@@ -124,9 +128,9 @@ fetch(`${baseUrl}/datasets/${datasetid}/in-progress/data/upload`, fetchOptions)
 
 ### Upload the Schema
 
-At this point we have our data stored as CSV in Edelweiss Data. However, It is currently stored as a bunch of string values in the Edelweiss Data.
+At this point we have our data stored as CSV in EdelweissData™ . However, It is currently stored as a bunch of string values in the EdelweissData™ .
 
-In order to make the data interesting and allow Edelweiss Data make sense of it, we need to supply a schema.
+In order to make the data interesting and allow EdelweissData™  make sense of it, we need to supply a schema.
 
 The schema defines the datatype of the columns in the data. The data types could be simple Data Types like `string`, `integer` or they could be more advanced datatypes like `DateTime` or [Smiles](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system)
 
@@ -153,7 +157,7 @@ There are currently two ways to define the Schema
 
 #### Schema Inference
 
-Edelweiss Data can infer the schema based on some heuristics. Schema inference can only infer basic information like the data type. If you use schema inference, consider augmenting the returned schema (e.g. with richer descriptions for each column if you have them) and uploading it again (see the Schema Upload section below for details)
+EdelweissData™  can infer the schema based on some heuristics. Schema inference can only infer basic information like the data type. If you use schema inference, consider augmenting the returned schema (e.g. with richer descriptions for each column if you have them) and uploading it again (see the Schema Upload section below for details)
 
 To infer the schema, call the [/datasets/{datasetId}/in-progress/schema/infer](https://api.edelweissdata.com/docs/index.html#operations-In_Progress-inferSchemaOfInProgressDataset) endpoint as follows
 
@@ -384,7 +388,7 @@ fetch(`${baseUrl}/datasets/${datasetid}/permissions/visibility`,fetchOptions)
 
 ### Publish the Dataset
 
-Now that we have a schema for the dataset and added metadata and a description we can publish our dataset. In the publishing step Edelweiss Data will validate the schema and also pre-compute some information about our data.
+Now that we have a schema for the dataset and added metadata and a description we can publish our dataset. In the publishing step EdelweissData™  will validate the schema and also pre-compute some information about our data.
 
 Publishing a Dataset creates a new version of that Dataset. Once published, a version cannot be changed. If you want to update the dataset you can create a new version. The old version will still be available though. In the URL scheme of EdelweissData™ all endpoints that reference published datasets specify either a specific version by number (starting at 1), or the special version string `latest` to indicate that we want to retrieve whatever is the newest version of this dataset.
 

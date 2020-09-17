@@ -1,14 +1,18 @@
 # Retrieving data
 
-An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-retrieving-data?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+<div class="message">
+  <div class="message-body">
+        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-retrieving-data?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly.
+  </div>
+</div>
 
-This walkthrough shows how to retrieve a dataset and its data from EdelweissData. One of EdelweissData's principles is that for most interactions there should be a nice graphical user interface as well as a well designed REST like API. For this notebook, we will look at the API requests equivalent to browsing a single dataset in the EdelweissData DataExplorer. We'll retrieve information about the "[COVID-19 timeseries data for Germany by state (RKI data)](https://edelweissdata.com/dataset/8dde2785-8a2a-4847-80b8-982a691954d6:106)" dataset - if you follow the link you can explore it interactively in the DataExplorer to get an idea about the data.
+This walkthrough shows how to retrieve a dataset and its data from EdelweissData. One of EdelweissData's principles is that for most interactions there should be a nice graphical user interface as well as a well designed REST like API. For this notebook, we will look at the API requests equivalent to browsing a single dataset in the EdelweissData™ DataExplorer. We'll retrieve information about the "[COVID-19 timeseries data for Germany by state (RKI data)](https://edelweissdata.com/dataset/8dde2785-8a2a-4847-80b8-982a691954d6:106)" dataset - if you follow the link you can explore it interactively in the DataExplorer to get an idea about the data.
 
-In this walkthrough we'll concentrate on public datasets that can be accessed without authorization. If you want to access private datasets, refer to the [authentication notebook](/docs-authentication) for details.
+In this walkthrough we'll concentrate on public datasets that can be accessed without authorization. If you want to access private datasets, refer to the [authentication notebook](/docs/authentication) for details.
 
 ## Datasets in EdelweissData
 
-You can think of datasets in EdelweissData as having 4 components:
+You can think of datasets in EdelweissData™ as having 4 components:
 * The **data table** itself
 * A **dataset description** that explains the data in human readable form - much like a README.md on a github repository
 * **Metadata** formatted as a JSON document. This can be used to store information about the author, equipment used to collect the data or whatever else you think may be useful.
@@ -251,7 +255,7 @@ Example Response (only 2 example rows):
 }
 ```
 
-The data retrieval endpoint accepts a [DataQuery JSON object](https://api.edelweissdata.com/docs/index.html#model-DataQuery) that allows you to order the data differently, filter the rows or return only selected columns (for details about the Query Language refer to the [Query Language walkthrough](query)).
+The data retrieval endpoint accepts a [DataQuery JSON object](https://api.edelweissdata.com/docs/index.html#model-DataQuery) that allows you to order the data differently, filter the rows or return only selected columns (for details about the Query Language refer to the [Query Language walkthrough](/docs/query-language)).
 
 Here is an example that filters to only the rows where the State column is "Berlin", orders by the number of new cases descending and returns only the first 10 rows:
 

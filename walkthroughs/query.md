@@ -1,12 +1,16 @@
 # Edelweiss Query Language
 
-An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-query-language?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+<div class="message">
+  <div class="message-body">
+        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-query-language?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly.
+  </div>
+</div>
 
 EdelweissData™ has a rich Query language that allows you to filter and sort both queries to find datasets as well as queries for the actual data of an individual dataset.
 
 To make it easy to get familiar with the Query Language this walkthrough is divided into two sections: an overview of the Query language and then an enumeration of the different types of expressions with examples.
 
-A useful way to get familiar with the Query Language is also to view a dataset in the [EdelweissData™ DataExplorer](https://edelweissdata.com/dataset), filter the data by filling search fields in the UI and ordering it by clicking the icons and then clicking the "API" button in the top right corner to copy/paste the code including the Query expression to filter & order data rows just like you see it in the DataExplorer.
+A useful way to get familiar with the Query Language is also to view a dataset in the [EdelweissData™ DataExplorer](https://edelweissdata.com/dataset/8dde2785-8a2a-4847-80b8-982a691954d6:128?q=%7B%7D), filter the data by filling search fields in the UI and ordering it by clicking the icons and then clicking the "API" button in the top right corner to copy/paste the code including the Query expression to filter & order data rows just like you see it in the DataExplorer.
 
 ## Overview
 
@@ -166,7 +170,7 @@ There are a few additional capabilities that fall outside the range of the usual
 
 ## Casts
 
-The final element of the EdelweissData™ Query Language are casts, which convert data from one datatype to another. Because the query language uses a simple type system, EdelweissData is able to infer if a cast is possible. If the cast is safe and cannot fail (for example converting an integer to a string), it will be inserted automatically. If the cast is possible, but not necessarily safe (for example converting a string to an integer may fail, or converting a float to an integer will lose data), the user has to insert it explicitly using the `cast` function. Its first argument is the expression to cast and the second one is the datatype identifier of the type to cast to.
+The final element of the EdelweissData™ Query Language are casts, which convert data from one datatype to another. Because the query language uses a simple type system, EdelweissData™ is able to infer if a cast is possible. If the cast is safe and cannot fail (for example converting an integer to a string), it will be inserted automatically. If the cast is possible, but not necessarily safe (for example converting a string to an integer may fail, or converting a float to an integer will lose data), the user has to insert it explicitly using the `cast` function. Its first argument is the expression to cast and the second one is the datatype identifier of the type to cast to.
 
 ```JSON
 { "cast": [{ "column": ["molecular_weight"] }, "xsd:integer"]}

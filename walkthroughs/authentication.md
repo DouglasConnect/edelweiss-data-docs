@@ -1,16 +1,24 @@
 # API Authentication
 
-An interactive version of this walkthrough exists as an [Observable notebook](https://observablehq.com/@danyx/edelweissdata-docs-authentication?collection=@danyx/edelweissdata-interactive-documentation) that allows you to change parameters and see results instantaneously.
+<div class="message">
+  <div class="message-body">
+        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-authentication?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly.
+  </div>
+</div>
 
-There are two types of Tokens for authenticating with EdelweissData API. They are
+There are two types of Tokens for authenticating with EdelweissData™ API. They are
 
 1. [Access Token](#access-tokens)
 2. [Refresh Token](#refresh-tokens)
 
-**⚠️  Tokens take the place of passwords in authentication flows, and they should be treated with care. Keep your tokens private, and do not hard-code them into your scripts.**
+<div class="message is-warning">
+  <div class="message-body">
+    ⚠️ Tokens take the place of passwords in authentication flows, and they should be treated with care. Keep your tokens private, and do not hard-code them into your scripts.
+  </div>
+</div>
 
 ## Access Tokens
-This is the primary way of authenticating to the EdelweissData API.
+This is the primary way of authenticating to the EdelweissData™ API.
 Access tokens tell the API who are you, and that you have the permissions to access your datasets.
 Access tokens expires after a 24 hours, after which you will need to generate a new one.
 
@@ -28,8 +36,8 @@ fetch(`${edelweissUrl}/datasets`, {
 ### Generating Access Tokens
 There are typically two ways to generate an access token, They are:
 
-- From Edelweiss UI
-- From Edelweiss Data CLI
+- From EdelweissData™ UI
+- From EdelweissData™  CLI (Command Line Interface)
 
 ### Generate an access token from the Edelweiss UI
 
@@ -39,8 +47,7 @@ To get your access token you simply take the following steps:
 - Click the "Get API Key" button
 - Click the "Copy Key" button
 
-
-### Generate an access token using the Edelweiss Data CLI.
+### Generate an access token using the EdelweissData™  CLI.
 
 We maintain two cli tools. One written in Javascript and published as a [package in npmjs](https://www.npmjs.com/package/edelweiss-data-cli), the other written in python and published as [a PyPi package](https://pypi.org/project/edelweiss-data-cli/). Since the examples here all use Javascript we will use the npmjs version here but if you have python set up locally you may prefer the Python based version that works similarly.
 
@@ -97,7 +104,7 @@ Just like access tokens, refresh tokens identify a specific user, so they can on
 Also just like access tokens, you should be careful where you store these as whoever has access to them can impersonate the user.
 
 ### Generating a Refresh Token
-You can generate a refresh token using the [Edelweiss Data CLI](https://www.npmjs.com/package/edelweiss-data-cli).
+You can generate a refresh token using the [EdelweissData™  CLI](https://www.npmjs.com/package/edelweiss-data-cli).
 
 ```bash
 edelweiss authenticate --refresh-token
@@ -171,4 +178,5 @@ and you should get an output like this
     "token_type": "Bearer"
 }
 ```
-which contains your access token and returns the lifetime of the access token in seconds
+
+which contains your access token and returns the lifetime of the access token in seconds.
