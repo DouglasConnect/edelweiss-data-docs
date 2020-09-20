@@ -2,7 +2,8 @@
 
 <div class="message">
   <div class="message-body">
-        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-retrieving-data?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly.
+        An interactive version of this walkthrough is available as an <a target="_blank" href="https://observablehq.com/@danyx/edelweissdata-docs-retrieving-data?collection=@danyx/edelweissdata-interactive-documentation">Observable notebook</a> that allows you to interact with the code and EdelweissData™ directly. A version of this walkthrough that uses the official
+        EdelweissData python client library is available <a target="_blank" href=" https://github.com/DouglasConnect/edelweiss-data-docs/tree/master/example-notebooks">in the public EdelweissData Documentation repository</a>
   </div>
 </div>
 
