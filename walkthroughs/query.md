@@ -29,7 +29,7 @@ exactSearch(column("location"), "Germany")
 
 The JSON serialisation we chose is very flexible, easily adaptable with future extensions and easy to correctly parse and construct in various languages - but it looks a bit odd the first time you see it. The JSON serialisation is an [S-Expression](https://en.wikipedia.org/wiki/S-expression) encoded as JSON, something that you might be familiar with if you ever had contact with the Lisp programming language or a descendant - but it doesn't matter if you aren't.
 
-The JSON serialisation always follows the same, rigid layout: everything is either encoded as a **direct value** (e.g. `"Germany"` above or numeric literals), or as an **operation** that is a JSON object with the operation name as the key and an array of arguments as the corresponding entries.
+The JSON serialisation always follows the same, rigid layout: everything is either encoded as a **direct value** (e.g. `"Germany"` above or numeric literals), or as an **operation** that is a JSON object with the operation name as its single key and an array of arguments as the corresponding entries.
 
 Here is a more complex example that extends the above by also filtering to rows where `new_cases` is above 100:
 
@@ -54,7 +54,7 @@ The Query Language can be used with EdelweissData™ API Endpoints that queries 
 
 ## Values
 
-Values are the simplest elements of a Query and are used verbatim (i.e. there is no special escaping etc necessary, they are simply JSON values). You can either use string values (in quotes, e.g. `"Germany"`), numbers (e.g. `4` or `3.2` or `2.384e12`), arrays (JSON style arrays, i.e. `[2.0, 3.0, 4.0]`) or JSON objects (e.g. `{"some-key": "some-value"}`). Of these, strings and numbers are by far used the most. Arrays can be useful for contains queries (where you want to know if a column of an array data type contains the values of the given array). Objects are only used occasionally when doing queries for datasets that include parts of the metadata that can of course contain nested objects.
+Values are the simplest elements of a Query and are used verbatim (i.e. there is no special escaping etc necessary, they are simply JSON values). You can either use string values (in quotes, e.g. `"Germany"`), numbers (e.g. `4` or `3.2` or `2.384e12`), arrays (JSON style arrays, i.e. `[2.0, 3.0, 4.0]`) or JSON objects (e.g. `{"some-key": "some-value"}`). Of these, strings and numbers are by far used the most. Arrays can be useful for contains queries (where you want to know if a column of an array data type contains the values of the given array). Objects are only used occasionally when doing queries for datasets that include parts of the metadata that can of course contain nested objects. Note that any object with a single key and an array as its value will be parsed as an operation.
 
 ## Columns
 
