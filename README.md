@@ -9,8 +9,8 @@ This repository contains the text for the integrated documentation of EdelweissD
 
 - [Authentication](walkthroughs/authentication.md)
 - [Creating and Publishing a Dataset](walkthroughs/create-publish.md)
-- [Details about the Query Language for filtering and ordering](walkthroughts/query.md)
-- [Using metadata effectively](walkthroughts/metadata.md)
+- [Details about the Query Language for filtering and ordering](walkthrought/query.md)
+- [Using metadata effectively](walkthrought/metadata.md)
 
 ## Examples
 
